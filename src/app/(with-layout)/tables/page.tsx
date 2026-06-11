@@ -1,10 +1,8 @@
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { InvoiceTable } from "@/components/Tables/invoice-table";
-import { TopChannels } from "@/components/Tables/top-channels";
-import { TopChannelsSkeleton } from "@/components/Tables/top-channels/skeleton";
-import { TopProducts } from "@/components/Tables/top-products";
-import { TopProductsSkeleton } from "@/components/Tables/top-products/skeleton";
 
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import { InvoiceTable } from "@/components/shared/Tables/invoice-table";
+import { TopChannels } from "@/components/shared/Tables/top-channels";
+import { TopProducts } from "@/components/shared/Tables/top-products";
 import { Metadata } from "next";
 import { Suspense } from "react";
 

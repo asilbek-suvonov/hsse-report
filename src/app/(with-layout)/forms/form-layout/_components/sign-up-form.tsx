@@ -1,5 +1,5 @@
-import InputGroup from "@/components/FormElements/InputGroup";
 import { ShowcaseSection } from "@/components/Layouts/showcase-section";
+import InputGroup from "@/components/shared/FormElements/InputGroup";
 
 export function SignUpForm() {
   return (

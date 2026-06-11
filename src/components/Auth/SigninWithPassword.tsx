@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import InputGroup from "../FormElements/InputGroup";
-import { Checkbox } from "../FormElements/checkbox";
+import InputGroup from "../shared/FormElements/InputGroup";
+import { Checkbox } from "../shared/FormElements/checkbox";
 
 export default function SigninWithPassword() {
   const router = useRouter();

@@ -2,16 +2,17 @@ import type { Metadata } from "next";
 
 import { GlobeIcon } from "@/assets/icons";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import DatePickerOne from "@/components/FormElements/DatePicker/DatePickerOne";
-import DatePickerTwo from "@/components/FormElements/DatePicker/DatePickerTwo";
-import InputGroup from "@/components/FormElements/InputGroup";
-import { TextAreaGroup } from "@/components/FormElements/InputGroup/text-area";
-import MultiSelect from "@/components/FormElements/MultiSelect";
-import { Checkbox } from "@/components/FormElements/checkbox";
-import { RadioInput } from "@/components/FormElements/radio";
-import { Select } from "@/components/FormElements/select";
-import { Switch } from "@/components/FormElements/switch";
+
 import { ShowcaseSection } from "@/components/Layouts/showcase-section";
+import InputGroup from "@/components/shared/FormElements/InputGroup";
+import { Switch } from "@/components/shared/FormElements/switch";
+import DatePickerOne from "@/components/shared/FormElements/DatePicker/DatePickerOne";
+import { TextAreaGroup } from "@/components/shared/FormElements/InputGroup/text-area";
+import { Select } from "@/components/shared/FormElements/select";
+import MultiSelect from "@/components/shared/FormElements/MultiSelect";
+import { Checkbox } from "@/components/shared/FormElements/checkbox";
+import { RadioInput } from "@/components/shared/FormElements/radio";
+import DatePickerTwo from "@/components/shared/FormElements/DatePicker/DatePickerTwo";
 
 export const metadata: Metadata = {
   title: "Form Elements",

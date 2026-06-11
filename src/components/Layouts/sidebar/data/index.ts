@@ -6,13 +6,9 @@ export const NAV_DATA = [
     items: [
       {
         title: "Dashboard",
+        url: "/",
         icon: Icons.HomeIcon,
-        items: [
-          {
-            title: "eCommerce",
-            url: "/",
-          },
-        ],
+        items: [],
       },
       {
         title: "Calendar",
@@ -27,68 +23,28 @@ export const NAV_DATA = [
         items: [],
       },
       {
-        title: "Forms",
-        icon: Icons.Alphabet,
-        items: [
-          {
-            title: "Form Elements",
-            url: "/forms/form-elements",
-          },
-          {
-            title: "Form Layout",
-            url: "/forms/form-layout",
-          },
-        ],
+        title: "Settings",
+        url: "/pages/settings",
+        icon: Icons.Settings,
+        items: [],
       },
       {
-        title: "Tables",
-        url: "/tables",
+        title: "Employees",
+        url: "/employees",
+        icon: Icons.User,
+        items: [],
+      },
+      {
+        title: "Reports",
+        url: "/reports",
         icon: Icons.Table,
-        items: [
-          {
-            title: "Tables",
-            url: "/tables",
-          },
-        ],
+        items: [],
       },
       {
-        title: "Pages",
-        icon: Icons.Alphabet,
-        items: [
-          {
-            title: "Settings",
-            url: "/pages/settings",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: "OTHERS",
-    items: [
-      {
-        title: "Charts",
-        icon: Icons.PieChart,
-        items: [
-          {
-            title: "Basic Chart",
-            url: "/charts/basic-chart",
-          },
-        ],
-      },
-      {
-        title: "UI Elements",
-        icon: Icons.FourCircle,
-        items: [
-          {
-            title: "Alerts",
-            url: "/ui-elements/alerts",
-          },
-          {
-            title: "Buttons",
-            url: "/ui-elements/buttons",
-          },
-        ],
+        title: "Messages",
+        url: "/messages",
+        icon: Icons.Message,
+        items: [],
       },
     ],
   },

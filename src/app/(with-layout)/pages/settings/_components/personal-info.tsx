@@ -6,9 +6,10 @@ import {
   PencilSquareIcon,
   UserIcon,
 } from "@/assets/icons";
-import InputGroup from "@/components/FormElements/InputGroup";
-import { TextAreaGroup } from "@/components/FormElements/InputGroup/text-area";
+
 import { ShowcaseSection } from "@/components/Layouts/showcase-section";
+import InputGroup from "@/components/shared/FormElements/InputGroup";
+import { TextAreaGroup } from "@/components/shared/FormElements/InputGroup/text-area";
 import { authClient } from "@/lib/auth/auth-client";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";

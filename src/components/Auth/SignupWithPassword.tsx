@@ -5,7 +5,7 @@ import { signUp } from "@/lib/auth/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import InputGroup from "../FormElements/InputGroup";
+import InputGroup from "../shared/FormElements/InputGroup";
 
 export default function SignupWithPassword() {
   const router = useRouter();
