@@ -34,12 +34,12 @@ const mockHandler = {
       });
     }
     if (prop === "signOut" || prop === "updateUser" || prop === "getSession") {
-      return async () => ({ data: { session: mockSession, user: mockUser }, error: null });
+      return async () => ({ data: true, error: null });
     }
     if (prop === "then") return undefined;
     return new Proxy(() => {}, mockHandler);
   },
-  apply: () => Promise.resolve({ data: { session: mockSession, user: mockUser }, error: null }),
+  apply: () => Promise.resolve({ data: true, error: null }),
 };
 
 export const authClient = new Proxy({}, mockHandler) as any;

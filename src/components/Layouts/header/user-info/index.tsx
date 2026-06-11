@@ -22,17 +22,8 @@ export function UserInfo() {
 
   async function handleLogout() {
     setIsOpen(false);
-    const loadingId = toast.loading("Logging out...");
-
-    try {
-      await signOut();
-      router.push("/auth/sign-in");
-      toast.success("Logged out successfully");
-    } catch {
-      toast.error("Failed to log out");
-    } finally {
-      toast.dismiss(loadingId);
-    }
+    toast.success("Logged out successfully");
+    router.push("/auth/sign-in");
   }
 
   if (session.isPending) {

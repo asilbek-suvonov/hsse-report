@@ -101,14 +101,7 @@ export async function getTopChannels() {
       conversion: 2.59,
       logo: logos.github,
     },
-    {
-      name: "Vimeo",
-      visitors: 3456,
-      revenues: 4220,
-      sales: 3456,
-      conversion: 2.59,
-      logo: logos.vimeo,
-    },
+   
     {
       name: "Facebook",
       visitors: 3456,

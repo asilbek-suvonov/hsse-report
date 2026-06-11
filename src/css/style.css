@@ -9,6 +9,7 @@
 
   --breakpoint-2xsm: 375px;
   --breakpoint-xsm: 425px;
+  --breakpoint-md: 850px;
   --breakpoint-3xl: 2000px;
 
   --color-current: currentColor;
