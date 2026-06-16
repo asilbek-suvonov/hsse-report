@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export type AppRole = "super_admin" | "admin";
 
@@ -24,9 +24,9 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "hsse_auth",
-      storage: createJSONStorage(() =>
-        typeof window !== "undefined" ? sessionStorage : localStorage
-      ),
-    }
-  )
+      storage: createJSONStorage(() => localStorage),
+      // SSR paytida hydration mismatch oldini olish
+      skipHydration: true,
+    },
+  ),
 );
