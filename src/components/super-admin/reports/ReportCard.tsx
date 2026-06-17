@@ -34,9 +34,9 @@ export function ReportCard({ report, onDragStart, onClick }: Props) {
       onClick={() => onClick(report)}
       className={cn(
         "group relative cursor-pointer rounded-2xl border border-stroke bg-white p-4 shadow-sm",
-        "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
+        "transition-all duration-200  hover:shadow-md",
         "dark:border-dark-3 dark:bg-gray-dark",
-        "border-l-4", type.border,
+        "border-t-4", type.border,
       )}
     >
       {/* Priority badge — top right */}
@@ -76,7 +76,6 @@ export function ReportCard({ report, onDragStart, onClick }: Props) {
 
         {/* Meta counts */}
         <div className="flex items-center gap-2.5 text-gray-400 dark:text-dark-6">
-          <span className="flex items-center gap-1 text-[11px]"><LikeIcon />{report.likes}</span>
           <span className="flex items-center gap-1 text-[11px]"><CommentIcon />{report.comments}</span>
           <span className="flex items-center gap-1 text-[11px]"><AttachIcon />{report.attachments}</span>
         </div>

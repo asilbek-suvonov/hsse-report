@@ -18,7 +18,6 @@ export function AdminDistribution() {
       </div>
 
     
-      {/* Distribution cards */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {DISTRIBUTION_DATA.map(d => {
           const pct = Math.round((d.total / total) * 100);
