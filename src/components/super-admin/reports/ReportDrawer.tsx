@@ -44,17 +44,13 @@ export function ReportDrawer({ report, onClose }: Props) {
           open ? "translate-x-0" : "translate-x-full")}
       >
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-stroke px-6 py-5 dark:border-dark-3">
+        <div className="flex items-start justify-between border-b border-stroke px-6 py-5 dark:border-dark-3 pt-[20px] ">
           <div>
             {report && (
               <>
                 <p className="mb-1 font-mono text-xs text-gray-400 dark:text-dark-6">{report.reportId}</p>
                 <h2 className="text-base font-bold text-dark dark:text-white">{report.title}</h2>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {type   && <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-semibold", type.bg,   type.color)}>{type.label}</span>}
-                  {status && <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-semibold", status.bg,   status.color)}>{status.label}</span>}
-                  {priority&&<span className={cn("rounded-full px-2.5 py-0.5 text-xs font-semibold", priority.bg, priority.color)}>{priority.label}</span>}
-                </div>
+                
               </>
             )}
           </div>

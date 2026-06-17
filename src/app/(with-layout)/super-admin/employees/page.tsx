@@ -250,7 +250,7 @@ export default function SuperAdminEmployeesPage() {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto hide-scrollbar">
             <table className="w-full text-sm">
               <thead className="border-b border-stroke bg-gray-50/60 dark:border-dark-3 dark:bg-dark-2/40">
                 <tr>

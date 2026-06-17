@@ -199,7 +199,7 @@ export default function SuperAdminReportsPage() {
         </div>
 
         {/* Kanban Board */}
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
           {KANBAN_COLUMNS.map(col => (
             <KanbanColumn
               key={col.id}
