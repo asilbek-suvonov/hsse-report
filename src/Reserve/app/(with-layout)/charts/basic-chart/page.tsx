@@ -1,6 +1,7 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { CampaignVisitors } from "@/components/Charts/campaign-visitors";
-import { UsedDevices } from "@/components/Charts/used-devices";
+import { CampaignVisitors } from "@/components/shared/Charts/campaign-visitors";
+import { UsedDevices } from "@/components/shared/Charts/used-devices";
+
 import { createTimeFrameExtractor } from "@/utils/timeframe-extractor";
 import { Metadata } from "next";
 
