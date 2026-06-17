@@ -192,7 +192,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-y-auto">
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-y-auto hide-scrollbar">
           <div className="flex flex-col gap-4 px-6 py-5">
 
             {/* Avatar upload */}

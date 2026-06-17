@@ -84,7 +84,7 @@ export function Sidebar() {
           </div>
 
           {/* Navigation */}
-          <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 md:mt-4">
+          <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 md:mt-4 hide-scrollbar">
             {NAV_DATA.map((section) => (
               <div key={section.label} className="mb-6">
                 <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">

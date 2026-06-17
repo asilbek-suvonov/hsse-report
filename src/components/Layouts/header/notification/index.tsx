@@ -86,7 +86,7 @@ export function Notification() {
           </span>
         </div>
 
-        <ul className="mb-3 max-h-92 space-y-1.5 overflow-y-auto">
+        <ul className="mb-3 max-h-92 space-y-1.5 overflow-y-auto hide-scrollbar">
           {notificationList.map((item, index) => (
             <li key={index} role="menuitem">
               <Link

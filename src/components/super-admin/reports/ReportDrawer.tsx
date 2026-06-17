@@ -65,7 +65,7 @@ export function ReportDrawer({ report, onClose }: Props) {
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto hide-scrollbar px-6 py-5">
           {report && (
             <div className="flex flex-col gap-6">
               {/* Description */}

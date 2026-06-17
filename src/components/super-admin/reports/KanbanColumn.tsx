@@ -51,7 +51,7 @@ export function KanbanColumn({
       <div className={cn("h-0.5 w-full", cfg.dot)} />
 
       {/* Cards */}
-      <div className="flex flex-col gap-2.5 overflow-y-auto p-3" style={{ maxHeight: "calc(100vh - 300px)", minHeight: 120 }}>
+      <div className="flex flex-col gap-2.5 overflow-y-auto hide-scrollbar p-3" style={{ maxHeight: "calc(100vh - 300px)", minHeight: 120 }}>
         {loading ? (
           Array(2).fill(null).map((_, i) => <ReportCardSkeleton key={i} />)
         ) : reports.length === 0 ? (

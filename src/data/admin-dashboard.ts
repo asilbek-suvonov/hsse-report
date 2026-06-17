@@ -118,7 +118,4 @@ export const RECENT_ACTIVITY = [
 // icon'larni page.tsx da e'lon qilamiz (TSX kerak)
 export const QUICK_ACTION_ITEMS = [
   { label: "Hisobot yaratish", href: "/admin/reports",    colorClass: "bg-primary text-white hover:bg-opacity-90",                                                                                iconKey: "plus"     },
-  { label: "Kalendar",         href: "/super-admin/calendar", colorClass: "bg-white border border-stroke text-dark hover:bg-gray-50 dark:bg-dark-2 dark:border-dark-3 dark:text-white dark:hover:bg-dark-3", iconKey: "calendar" },
-  { label: "Hisobotlar",       href: "/admin/reports",    colorClass: "bg-white border border-stroke text-dark hover:bg-gray-50 dark:bg-dark-2 dark:border-dark-3 dark:text-white dark:hover:bg-dark-3", iconKey: "file"     },
-  { label: "Xabarlar",         href: "/admin/messages",   colorClass: "bg-white border border-stroke text-dark hover:bg-gray-50 dark:bg-dark-2 dark:border-dark-3 dark:text-white dark:hover:bg-dark-3", iconKey: "message"  },
 ];

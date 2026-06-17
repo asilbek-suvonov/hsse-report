@@ -8,12 +8,6 @@ import { useEffect } from "react";
 
 interface Props { employee: Employee | null; onClose: () => void; onEdit: (e: Employee) => void; }
 
-const ROLE_COLORS: Record<string, string> = {
-  super_admin: "text-primary bg-primary/10",
-  admin:       "text-violet-700 bg-violet-50 dark:text-violet-400 dark:bg-violet-900/20",
-  manager:     "text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-900/20",
-  employee:    "text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-900/20",
-};
 
 const ROLE_LABELS: Record<string, string> = {
   super_admin: "Super Admin", admin: "Admin", manager: "Manager", employee: "Employee",
@@ -59,16 +53,14 @@ export function EmployeeDetailDrawer({ employee, onClose, onEdit }: Props) {
         </div>
 
         {employee && (
-          <div className="flex flex-1 flex-col overflow-y-auto">
+          <div className="flex flex-1 flex-col overflow-y-auto hide-scrollbar">
             {/* Profile hero */}
             <div className="flex flex-col items-center bg-linear-to-b from-primary/5 to-transparent px-6 py-6">
               <div className="relative mb-3">
                 <div className="relative h-20 w-20 overflow-hidden rounded-full ring-4 ring-white shadow-lg dark:ring-gray-dark">
                   <Image src={employee.avatar} alt={employee.firstName} fill sizes="80px" className="object-cover" />
                 </div>
-                <span className={cn("absolute -bottom-1 -right-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold", ROLE_COLORS[employee.role])}>
-                  {ROLE_LABELS[employee.role]}
-                </span>
+               
               </div>
               <h3 className="text-base font-bold text-dark dark:text-white">{employee.firstName} {employee.lastName}</h3>
               <p className="text-xs text-gray-400 dark:text-dark-6">{employee.position} · {employee.department}</p>
@@ -103,27 +95,7 @@ export function EmployeeDetailDrawer({ employee, onClose, onEdit }: Props) {
                 </div>
               </div>
 
-              {/* Permissions */}
-              <div>
-                <h4 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-dark-6">Ruxsatlar</h4>
-                <div className="flex flex-wrap gap-2">
-                  {ALL_PERMISSIONS.map(p => {
-                    const has = employee.permissions.includes(p.key);
-                    return (
-                      <span key={p.key} className={cn(
-                        "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
-                        has ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-400 dark:bg-dark-3 dark:text-dark-6"
-                      )}>
-                        {has
-                          ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                          : <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-                        }
-                        {p.label}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
+   
             </div>
 
             {/* Footer */}
