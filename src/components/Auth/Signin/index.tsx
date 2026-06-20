@@ -19,14 +19,6 @@ export default function Signin() {
         <SigninWithPassword />
       </div>
 
-      <div className="mt-6 text-center">
-        <p>
-          Don’t have any account?{" "}
-          <Link href="/auth/sign-up" className="text-primary">
-            Sign Up
-          </Link>
-        </p>
-      </div>
     </Suspense>
   );
 }
