@@ -40,7 +40,7 @@ export function ReportDrawer({ report, onClose }: Props) {
 
       <aside
         role="dialog" aria-modal="true"
-        className={cn("fixed right-0 top-0 z-9999 flex h-full w-full max-w-[540px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-dark",
+        className={cn("fixed right-0 top-0 z-9999 flex h-full w-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-dark sm:max-w-[540px]",
           open ? "translate-x-0" : "translate-x-full")}
       >
         {/* Header */}

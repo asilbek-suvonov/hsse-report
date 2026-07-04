@@ -144,23 +144,25 @@ export default function SuperAdminReportsPage() {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               <span className="font-medium text-dark dark:text-white">Reports</span>
             </nav>
-            <h1 className="text-2xl font-bold text-dark dark:text-white">Reports Management</h1>
+            <h1 className="text-xl font-bold text-dark dark:text-white sm:text-2xl">Reports Management</h1>
             <p className="mt-0.5 text-sm text-gray-500 dark:text-dark-6">Barcha hodisa va kuzatuvlarni boshqarish</p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {[
               { label: "Export", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> },
               { label: "Refresh", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="23 4 23 10 17 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> },
             ].map(btn => (
-              <button key={btn.label}
-                className="flex items-center gap-1.5 rounded-lg border border-stroke bg-white px-3 py-2 text-sm font-medium text-dark transition hover:bg-gray-50 dark:border-dark-3 dark:bg-gray-dark dark:text-white dark:hover:bg-dark-2">
-                {btn.icon}{btn.label}
+              <button key={btn.label} aria-label={btn.label}
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-stroke bg-white text-dark transition hover:bg-gray-50 dark:border-dark-3 dark:bg-gray-dark dark:text-white dark:hover:bg-dark-2 sm:w-auto sm:gap-1.5 sm:px-3">
+                {btn.icon}
+                <span className="hidden sm:inline text-sm font-medium">{btn.label}</span>
               </button>
             ))}
-            <button className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-opacity-90">
+            <button className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-opacity-90 sm:px-4">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              Create Report
+              <span className="hidden xs:inline">Create Report</span>
+              <span className="xs:hidden">Yaratish</span>
             </button>
           </div>
         </div>

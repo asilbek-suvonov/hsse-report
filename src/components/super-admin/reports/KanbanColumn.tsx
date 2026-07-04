@@ -30,7 +30,7 @@ export function KanbanColumn({
       onDrop={(e) => onDrop(e, status)}
       onDragLeave={onDragLeave}
       className={cn(
-        "flex w-72 shrink-0 flex-col rounded-2xl border transition-all duration-200",
+        "flex w-64 shrink-0 flex-col rounded-2xl border transition-all duration-200 sm:w-72",
         isOver
           ? "border-primary/50 bg-primary/5 dark:bg-primary/10"
           : "border-stroke bg-gray-50/80 dark:border-dark-3 dark:bg-dark-2/40",

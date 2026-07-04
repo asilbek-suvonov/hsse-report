@@ -41,7 +41,7 @@ export function EmployeeDetailDrawer({ employee, onClose, onEdit }: Props) {
         aria-hidden="true" />
 
       <aside role="dialog" aria-modal="true"
-        className={cn("fixed right-0 top-0 z-9999 flex h-full w-full max-w-[480px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-dark",
+        className={cn("fixed right-0 top-0 z-9999 flex h-full w-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-dark sm:max-w-[480px]",
           open ? "translate-x-0" : "translate-x-full")}>
 
         <div className="flex items-center justify-between border-b border-stroke px-6 py-4 dark:border-dark-3">

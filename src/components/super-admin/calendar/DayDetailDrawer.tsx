@@ -69,7 +69,7 @@ export function DayDetailDrawer({day,onClose}:{day:DayData|null;onClose:()=>void
     <>
       <div onClick={onClose} className={cn("fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-all duration-300",open?"opacity-100":"pointer-events-none opacity-0")} aria-hidden="true"/>
       <aside role="dialog" aria-modal="true"
-        className={cn("fixed right-0 top-0 z-50 flex h-full w-full max-w-[520px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-dark",open?"translate-x-0":"translate-x-full")}>
+        className={cn("fixed right-0 top-0 z-50 flex h-full w-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-dark sm:max-w-[520px]",open?"translate-x-0":"translate-x-full")}>
         <div className="flex items-start justify-between border-b border-stroke px-6 py-5 dark:border-dark-3">
           <div>
             <h2 className="text-base font-bold capitalize text-dark dark:text-white">{dateStr}</h2>

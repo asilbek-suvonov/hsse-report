@@ -17,7 +17,7 @@ export default function SuperAdminDashboardPage(){
   return(
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold text-dark dark:text-white">Super Admin Dashboard</h1>
+        <h1 className="text-xl font-bold text-dark dark:text-white sm:text-2xl">Super Admin Dashboard</h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-dark-6">HSSE hisobot va hodisalar umumiy statistikasi</p>
       </div>
 

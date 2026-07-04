@@ -114,20 +114,20 @@ function StatsCards({ employees }: { employees: Employee[] }) {
   const recent = employees.filter(e => new Date(e.createdAt) > new Date(Date.now() - 30*24*3600*1000)).length;
 
   return (
-    <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
       {[
         { label:"Jami xodimlar",          value:total,  iconKey:"users"  as const, color:"text-primary",   bg:"bg-primary/10 dark:bg-primary/20"      },
         { label:"Faol xodimlar",          value:active, iconKey:"active" as const, color:"text-green-600", bg:"bg-green-50 dark:bg-green-900/20"       },
         { label:"Admin foydalanuvchilar", value:admins, iconKey:"admin"  as const, color:"text-violet-600",bg:"bg-violet-50 dark:bg-violet-900/20"     },
         { label:"Yangi (30 kun)",         value:recent, iconKey:"new"    as const, color:"text-amber-600", bg:"bg-amber-50 dark:bg-amber-900/20"       },
       ].map(s => (
-        <div key={s.label} className="flex items-center gap-3 rounded-xl border border-stroke bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-dark-3 dark:bg-gray-dark">
-          <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", s.bg, s.color)}>
+        <div key={s.label} className="flex items-center gap-2.5 rounded-xl border border-stroke bg-white p-3.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-dark-3 dark:bg-gray-dark sm:gap-3 sm:p-4">
+          <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11", s.bg, s.color)}>
             {STATS_ICONS[s.iconKey]}
           </div>
-          <div>
-            <p className={cn("text-2xl font-bold", s.color)}>{s.value}</p>
-            <p className="text-xs text-gray-400 dark:text-dark-6">{s.label}</p>
+          <div className="min-w-0">
+            <p className={cn("text-xl font-bold sm:text-2xl", s.color)}>{s.value}</p>
+            <p className="truncate text-[11px] text-gray-400 dark:text-dark-6 sm:text-xs">{s.label}</p>
           </div>
         </div>
       ))}
@@ -217,18 +217,21 @@ export default function SuperAdminEmployeesPage() {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               <span className="font-medium text-dark dark:text-white">Xodimlar</span>
             </nav>
-            <h1 className="text-2xl font-bold text-dark dark:text-white">Xodimlar boshqaruvi</h1>
+            <h1 className="text-xl font-bold text-dark dark:text-white sm:text-2xl">Xodimlar boshqaruvi</h1>
             <p className="mt-0.5 text-sm text-gray-500 dark:text-dark-6">Barcha xodimlarni ko'rish va boshqarish</p>
           </div>
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 rounded-lg border border-stroke bg-white px-3 py-2 text-sm font-medium text-dark transition hover:bg-gray-50 dark:border-dark-3 dark:bg-gray-dark dark:text-white dark:hover:bg-dark-2">
+            <button
+              aria-label="Export Excel"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-stroke bg-white text-dark transition hover:bg-gray-50 dark:border-dark-3 dark:bg-gray-dark dark:text-white sm:h-auto sm:w-auto sm:gap-1.5 sm:px-3 sm:py-2">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Export Excel
+              <span className="hidden text-sm font-medium sm:inline">Export Excel</span>
             </button>
             <button onClick={openAdd}
-              className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-opacity-90">
+              className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-opacity-90 sm:px-4">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              Add Employee
+              <span className="hidden xs:inline">Add Employee</span>
+              <span className="xs:hidden">Qo'shish</span>
             </button>
           </div>
         </div>
