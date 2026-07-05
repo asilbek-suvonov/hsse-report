@@ -306,7 +306,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
       <div
         onClick={onClose}
         className={cn(
-          "fixed inset-0 z-9998 bg-black/40 backdrop-blur-[2px] transition-all duration-300",
+          "fixed inset-0 z-9600 bg-black/40 backdrop-blur-[2px] transition-all duration-300",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         aria-hidden="true"
@@ -317,7 +317,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
         role="dialog"
         aria-modal="true"
         className={cn(
-          "fixed right-0 top-0 z-9999 flex h-full w-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-dark sm:max-w-[560px]",
+          "fixed right-0 top-0 z-9700 flex h-full w-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-dark sm:max-w-[560px]",
           open ? "translate-x-0" : "translate-x-full",
         )}
       >
