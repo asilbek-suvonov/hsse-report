@@ -39,6 +39,7 @@ export function Header() {
           Dashboard
         </h1>
       </div>
+      
 
       <div className="2xsm:gap-4 flex flex-1 items-center justify-end gap-2">
         <div className="relative hidden w-full max-w-75 md:block">
