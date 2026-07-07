@@ -6,7 +6,7 @@ const ROLE_ROUTES: Record<string, string[]> = {
   admin: ["/admin"],
 };
 
-const PUBLIC_ROUTES = ["/auth/sign-in", "/auth/sign-up"];
+const PUBLIC_ROUTES = ["/auth/sign-in"];
 
 const SESSION_KEY = "hsse_mock_session";
 
