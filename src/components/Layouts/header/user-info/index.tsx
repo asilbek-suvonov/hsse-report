@@ -12,14 +12,18 @@ import { useAuthStore } from "@/store/useAuthStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
 
 export function UserInfo() {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
+  const [isOpen,  setIsOpen]  = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const router  = useRouter();
   const session = useSession();
+
+  // Prevent hydration mismatch: localStorage data is not available on server
+  useEffect(() => { setMounted(true); }, []);
 
   async function handleLogout() {
     setIsOpen(false);
@@ -29,27 +33,18 @@ export function UserInfo() {
     router.replace("/auth/sign-in");
   }
 
-  if (session.isPending) {
+  if (!mounted || session.isPending) {
     return (
-      <div className="flex items-center gap-3" role="presentation">
-        <span className="inline-block size-12 animate-pulse rounded-full bg-gray-200" />
-
-        <div className="relative h-7 w-fit">
-          <span className="flex h-7 w-30 animate-pulse items-center justify-end rounded-full bg-gray-200 pr-2" />
-          <ChevronUpIcon
-            aria-hidden
-            className="absolute top-1/2 right-2 -translate-y-1/2 rotate-180 text-gray-400/60"
-            strokeWidth={1.5}
-          />
-        </div>
+      <div className="flex items-center" role="presentation" aria-hidden="true">
+        <span className="inline-block size-12 animate-pulse rounded-full bg-gray-200 dark:bg-dark-3" />
       </div>
     );
   }
 
   const user = {
-    name: session?.data?.user?.name as string,
-    email: session?.data?.user?.email as string,
-    img: session?.data?.user?.image as string,
+    name:  (session?.data?.user?.name  ?? "") as string,
+    email: (session?.data?.user?.email ?? "") as string,
+    img:   (session?.data?.user?.image ?? "") as string,
   };
 
   return (
@@ -58,7 +53,7 @@ export function UserInfo() {
         <span className="sr-only">My Account</span>
 
         <figure className="flex items-center gap-3">
-          {user?.img ? (
+          {user.img ? (
             <Image
               src={user.img}
               className="size-12 overflow-hidden rounded-full object-cover"
@@ -72,13 +67,9 @@ export function UserInfo() {
           )}
           <figcaption className="flex items-center gap-1 font-medium text-dark max-[1024px]:sr-only dark:text-dark-6">
             <span className="max-w-24 truncate">{user.name}</span>
-
             <ChevronUpIcon
               aria-hidden
-              className={cn(
-                "rotate-180 transition-transform",
-                isOpen && "rotate-0",
-              )}
+              className={cn("rotate-180 transition-transform", isOpen && "rotate-0")}
               strokeWidth={1.5}
             />
           </figcaption>
@@ -92,7 +83,7 @@ export function UserInfo() {
         <h2 className="sr-only">User information</h2>
 
         <figure className="flex items-center gap-2.5 px-5 py-3.5">
-          {user?.img ? (
+          {user.img ? (
             <Image
               src={user.img}
               className="size-12 shrink-0 overflow-hidden rounded-full object-cover object-center"
@@ -104,15 +95,9 @@ export function UserInfo() {
           ) : (
             <UserAvatar />
           )}
-
           <figcaption className="space-y-1 text-base font-medium">
-            <div className="mb-2 leading-none text-dark dark:text-white">
-              {user.name}
-            </div>
-
-            <div className="w-full max-w-47.5 truncate leading-none text-gray-6">
-              {user.email}
-            </div>
+            <div className="mb-2 leading-none text-dark dark:text-white">{user.name}</div>
+            <div className="w-full max-w-47.5 truncate leading-none text-gray-6">{user.email}</div>
           </figcaption>
         </figure>
 
@@ -120,25 +105,12 @@ export function UserInfo() {
 
         <div className="p-2 text-base text-[#4B5563] *:cursor-pointer dark:text-dark-6">
           <Link
-            href={"/profile"}
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2.25 ring-primary outline-0 hover:bg-gray-2 hover:text-dark focus-visible:ring-1 dark:hover:bg-dark-3 dark:hover:text-white"
-          >
-            <UserIcon />
-
-            <span className="mr-auto text-base font-medium">View profile</span>
-          </Link>
-
-          <Link
-            href={"/pages/settings"}
+            href="/super-admin/settings"
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2.25 ring-primary outline-0 hover:bg-gray-2 hover:text-dark focus-visible:ring-1 dark:hover:bg-dark-3 dark:hover:text-white"
           >
             <SettingsIcon />
-
-            <span className="mr-auto text-base font-medium">
-              Account Settings
-            </span>
+            <span className="mr-auto text-base font-medium">Account Settings</span>
           </Link>
         </div>
 
@@ -146,11 +118,10 @@ export function UserInfo() {
 
         <div className="p-2 text-base text-[#4B5563] dark:text-dark-6">
           <button
-            className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.25 ring-primary outline-0 hover:bg-gray-2 hover:text-dark focus-visible:ring-1 dark:hover:bg-dark-3 dark:hover:text-white"
             onClick={handleLogout}
+            className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.25 ring-primary outline-0 hover:bg-gray-2 hover:text-dark focus-visible:ring-1 dark:hover:bg-dark-3 dark:hover:text-white"
           >
             <LogOutIcon />
-
             <span className="text-base font-medium">Log out</span>
           </button>
         </div>

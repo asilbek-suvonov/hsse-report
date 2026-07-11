@@ -7,12 +7,16 @@ import { useEffect } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // localStorage dan auth state ni yuklash (SSR hydration mismatch oldini olish)
     useAuthStore.persist.rehydrate();
   }, []);
 
   return (
-    <ThemeProvider defaultTheme="light" attribute="class">
+    <ThemeProvider
+      defaultTheme="light"
+      attribute="class"
+      enableSystem={false}
+      disableTransitionOnChange
+    >
       <SidebarProvider>{children}</SidebarProvider>
     </ThemeProvider>
   );

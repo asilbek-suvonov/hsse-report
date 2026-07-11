@@ -5,6 +5,6 @@ export default function Signin() {
   return (
     <Suspense fallback={null}>
       <SigninWithPassword />
-    </Suspense>
+    </Suspense> 
   );
-}
+} 

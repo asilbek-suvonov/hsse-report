@@ -27,6 +27,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "avatar.vercel.sh",
         port: ""
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        port: ""
       }
     ]
   }
