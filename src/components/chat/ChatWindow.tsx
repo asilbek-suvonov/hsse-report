@@ -164,17 +164,7 @@ export function ChatWindow({ user, messages, onSend, onUserClick }: Props) {
 
                       {msg.text && <p className="text-sm leading-relaxed">{msg.text}</p>}
 
-                      {/* Reactions */}
-                      {msg.reactions && msg.reactions.length > 0 && (
-                        <div className="mt-1 flex flex-wrap gap-1">
-                          {msg.reactions.map(r => (
-                            <span key={r.emoji}
-                              className="flex items-center gap-0.5 rounded-full bg-black/10 px-1.5 py-0.5 text-xs dark:bg-white/10">
-                              {r.emoji} <span className="text-[10px]">{r.count}</span>
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                   
 
                       {/* Time + status */}
                       <div className={cn("mt-0.5 flex items-center gap-1",
@@ -212,8 +202,8 @@ export function ChatWindow({ user, messages, onSend, onUserClick }: Props) {
       )}
 
       {/* ── Composer ── */}
-      <div className="border-t border-stroke bg-white px-3 py-3 dark:border-dark-3 dark:bg-gray-dark">
-        <div className="flex items-end gap-2 rounded-2xl border border-stroke bg-gray-50 px-3 py-2.5 transition focus-within:border-primary dark:border-dark-3 dark:bg-dark-2">
+      <div className="border-t border-stroke bg-white px-3 py-1 dark:border-dark-3 dark:bg-gray-dark">
+        <div className="flex items-end gap-2 rounded-2xl border border-stroke bg-gray-50 px-3 py-2.5 transition focus-within:border-primary dark:border-dark-3 dark:bg-dark-2 h-fit">
           {/* Emoji */}
           <button aria-label="Emoji" className="mb-0.5 shrink-0 text-gray-400 transition hover:text-primary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -224,15 +214,7 @@ export function ChatWindow({ user, messages, onSend, onUserClick }: Props) {
             </svg>
           </button>
 
-          {/* Image upload */}
-          <label className="mb-0.5 shrink-0 cursor-pointer text-gray-400 transition hover:text-primary" aria-label="Rasm yuklash">
-            <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={handleFile}/>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-              <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-            </svg>
-          </label>
+      
 
           {/* Attachment */}
           <label className="mb-0.5 shrink-0 cursor-pointer text-gray-400 transition hover:text-primary" aria-label="Fayl biriktirish">
@@ -268,9 +250,7 @@ export function ChatWindow({ user, messages, onSend, onUserClick }: Props) {
             </svg>
           </button>
         </div>
-        <p className="mt-1 text-center text-[11px] text-gray-400 dark:text-dark-6">
-          Enter — yuborish · Shift+Enter — yangi qator
-        </p>
+       
       </div>
     </div>
   );
