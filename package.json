@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
+    "@tanstack/react-query": "^5.101.2",
     "apexcharts": "^4.5.0",
+    "axios": "^1.18.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
