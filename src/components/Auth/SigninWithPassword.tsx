@@ -1,7 +1,6 @@
 "use client";
 
-import { signIn } from "@/lib/auth/auth-client";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useLogin } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import React, { useId, useState } from "react";
 import { toast } from "sonner";
@@ -77,7 +76,6 @@ function Field({
 /* ── Main Component ──────────────────────────────────────────────────────── */
 export default function SigninWithPassword() {
   const router   = useRouter();
-  const setUser  = useAuthStore(s => s.setUser);
   const emailId  = useId();
   const passId   = useId();
 
@@ -85,9 +83,10 @@ export default function SigninWithPassword() {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState("");
   const [fieldErr, setFieldErr] = useState({ email: "", password: "" });
+
+  const loginMutation = useLogin();
 
   const validate = () => {
     const errs = { email: "", password: "" };
@@ -102,26 +101,15 @@ export default function SigninWithPassword() {
     setError("");
     if (!validate()) return;
 
-    setLoading(true);
-    try {
-      const result = await signIn.email({ email: email.trim(), password });
-      if (!result.data) {
-        const msg = result.error?.message ?? "Email yoki parol noto'g'ri";
-        setError(msg);
-        toast.error(msg);
-        return;
+    loginMutation.mutate(
+      { email: email.trim(), password },
+      {
+        onError: (err: any) => {
+          const msg = err?.message || "Email yoki parol noto'g'ri";
+          setError(msg);
+        },
       }
-      const user = result.data.user;
-      setUser(user, user.role);
-      toast.success("Muvaffaqiyatli kirdingiz!");
-      router.replace(user.role === "super_admin" ? "/super-admin/dashboard" : "/admin/dashboard");
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Kirish amalga oshmadi";
-      setError(msg);
-      toast.error(msg);
-    } finally {
-      setLoading(false);
-    }
+    );
   };
 
   return (
@@ -210,11 +198,11 @@ export default function SigninWithPassword() {
         {/* Submit */}
         <button
           type="submit"
-          disabled={loading}
-          aria-busy={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-white transition hover:bg-opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
+          disabled={loginMutation.isPending}
+          aria-busy={loginMutation.isPending}
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-white transition hover:bg-opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
         >
-          {loading ? (
+          {loginMutation.isPending ? (
             <>
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" aria-hidden="true"/>
               Kirish...

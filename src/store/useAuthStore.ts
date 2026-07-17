@@ -3,12 +3,26 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 export type AppRole = "super_admin" | "admin";
 
+export interface AuthUser {
+  id: string | number;
+  name: string;
+  email: string;
+  image?: string;
+  avatarUrl?: string | null;
+  phone?: string | null;
+  branchId?: number | null;
+  branchName?: string | null;
+  createdAt?: string;
+}
+
 interface AuthState {
-  user: { id: string; name: string; email: string; image?: string } | null;
+  user: AuthUser | null;
   role: AppRole | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   setUser: (user: any, role: string) => void;
   clearAuth: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -17,10 +31,35 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       role: null,
       isAuthenticated: false,
-      setUser: (user, role) =>
-        set({ user, role: role as AppRole, isAuthenticated: true }),
+      isLoading: false,
+      setUser: (user, role) => {
+        // Normalize role: API SUPER_ADMIN/ADMIN -> frontend super_admin/admin
+        const normalizedRole = (role || "")
+          .toLowerCase()
+          .replace("-", "_") as AppRole;
+
+        const normalizedUser: AuthUser = {
+          id: user.id,
+          name: user.fullName || user.name || "",
+          email: user.email || "",
+          image: user.avatarUrl || user.image || "",
+          avatarUrl: user.avatarUrl || null,
+          phone: user.phone || null,
+          branchId: user.branchId || null,
+          branchName: user.branchName || null,
+          createdAt: user.createdAt,
+        };
+
+        set({
+          user: normalizedUser,
+          role: normalizedRole,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+      },
       clearAuth: () =>
-        set({ user: null, role: null, isAuthenticated: false }),
+        set({ user: null, role: null, isAuthenticated: false, isLoading: false }),
+      setLoading: (loading: boolean) => set({ isLoading: loading }),
     }),
     {
       name: "hsse_auth",

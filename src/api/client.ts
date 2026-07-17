@@ -16,10 +16,10 @@ import axios, {
 import { useAuthStore } from "@/store/useAuthStore";
 
 // ─── Base URL ─────────────────────────────────────────────────────────────
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://185.187.8.92";
-const VERSION  = process.env.NEXT_PUBLIC_API_VERSION  ?? "v1";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://185.182.9.93:8084";
+const VERSION  = process.env.NEXT_PUBLIC_API_VERSION  ?? "";
 
-export const API_ROOT = `${BASE_URL}/api/${VERSION}`;
+export const API_ROOT = VERSION ? `${BASE_URL}/api/${VERSION}` : `${BASE_URL}/api`;
 
 // ─── Axios instance ────────────────────────────────────────────────────────
 export const apiClient = axios.create({
