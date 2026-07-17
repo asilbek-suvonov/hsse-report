@@ -1,6 +1,5 @@
 "use client";
 
-import { ALL_PERMISSIONS } from "@/data/employees";
 import { cn } from "@/lib/utils";
 import { Employee } from "@/types/employee";
 import Image from "next/image";

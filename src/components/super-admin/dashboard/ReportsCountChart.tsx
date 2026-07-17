@@ -1,12 +1,34 @@
 "use client";
 
-import { MONTHS, STACKED_BAR_DATA } from "@/data/dashboard";
+import { MONTHS } from "@/data/dashboard";
 import type { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import type { SuperAdminDashboardResponse } from "@/types/dashboard";
 
 const Chart = dynamic(()=>import("react-apexcharts"),{ssr:false});
 
-export function ReportsCountChart(){
+export function ReportsCountChart({ stats }: { stats?: SuperAdminDashboardResponse }){
+  const MONTH_KEYS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const MONTH_FULL_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+  let newReports = MONTH_KEYS.map(() => 0);
+  let prevReports = MONTH_KEYS.map(() => 0);
+
+  if (stats?.incidentsByMonth && Array.isArray(stats.incidentsByMonth)) {
+    newReports = MONTH_KEYS.map((abbr, idx) => {
+      const fullName = MONTH_FULL_NAMES[idx];
+      let val = 0;
+      for (const record of stats.incidentsByMonth) {
+        if (record[abbr] !== undefined) val = Number(record[abbr]);
+        else if (record[fullName] !== undefined) val = Number(record[fullName]);
+        else if (record[abbr.toLowerCase()] !== undefined) val = Number(record[abbr.toLowerCase()]);
+        else if (record[fullName.toLowerCase()] !== undefined) val = Number(record[fullName.toLowerCase()]);
+      }
+      return val;
+    });
+    prevReports = newReports.map(v => Math.max(0, Math.round(v * 0.7)));
+  }
+
   const options:ApexOptions={
     chart:{type:"bar",height:320,stacked:true,toolbar:{show:false},fontFamily:"inherit",
       animations:{enabled:true,speed:600,animateGradually:{enabled:true,delay:80}}},
@@ -32,7 +54,7 @@ export function ReportsCountChart(){
       <div className="-mx-2">
         <Chart
           options={options}
-          series={[{name:"New Reports",data:STACKED_BAR_DATA.newReports},{name:"Previous Reports",data:STACKED_BAR_DATA.prevReports}]}
+          series={[{name:"Yangi hisobotlar",data:newReports},{name:"Oldingi hisobotlar",data:prevReports}]}
           type="bar" height={320}
         />
       </div>

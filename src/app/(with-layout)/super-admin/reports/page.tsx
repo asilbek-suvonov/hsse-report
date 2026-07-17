@@ -2,12 +2,14 @@
 
 import { KanbanColumn }  from "@/components/super-admin/reports/KanbanColumn";
 import { ReportDrawer }  from "@/components/super-admin/reports/ReportDrawer";
-import { KANBAN_COLUMNS, MOCK_REPORTS, PRIORITY_CONFIG, TYPE_CONFIG } from "@/data/reports";
+import { KANBAN_COLUMNS, PRIORITY_CONFIG, TYPE_CONFIG } from "@/data/reports";
 import { useClickOutside } from "@/hooks/use-click-outside";
+import { useReports } from "@/hooks/useReports";
+import { mapApiReportToReport } from "@/lib/report-adapters";
 import { cn } from "@/lib/utils";
-import { Report, ReportStatus, ReportType } from "@/types/report";
+import { Report, ReportStatus } from "@/types/report";
 import Link from "next/link";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 /* ── tiny multi-select chip ──────────────────────────────────────────────── */
 function FilterChip({ label, options, selected, onChange }: {
@@ -92,9 +94,7 @@ function StatsBar({ reports }: { reports: Report[] }) {
 
 /* ── Main Page ────────────────────────────────────────────────────────────── */
 export default function SuperAdminReportsPage() {
-  const [reports, setReports] = useState<Report[]>(MOCK_REPORTS);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
-  const [loading] = useState(false);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
@@ -102,6 +102,8 @@ export default function SuperAdminReportsPage() {
   const [prioFilter, setPrioFilter] = useState<string[]>([]);
   const [dragOverCol, setDragOverCol] = useState<ReportStatus | null>(null);
   const dragId = useRef<string | null>(null);
+  const { data, isLoading, refetch, isFetching } = useReports({ page: 0, size: 100, search: search || undefined });
+  const reports = useMemo<Report[]>(() => (data?.content || []).map(mapApiReportToReport), [data]);
 
   /* drag handlers */
   const handleDragStart = (e: React.DragEvent, id: string) => {
@@ -113,10 +115,7 @@ export default function SuperAdminReportsPage() {
   };
   const handleDrop = (e: React.DragEvent, col: ReportStatus) => {
     e.preventDefault();
-    if (dragId.current) {
-      setReports(prev => prev.map(r => r.id === dragId.current ? { ...r, status: col, updatedAt: new Date().toISOString().slice(0, 10) } : r));
-      dragId.current = null;
-    }
+    dragId.current = null;
     setDragOverCol(null);
   };
 
@@ -151,9 +150,9 @@ export default function SuperAdminReportsPage() {
           <div className="flex flex-wrap items-center gap-2">
             {[
               { label: "Export", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> },
-              { label: "Refresh", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="23 4 23 10 17 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+              { label: "Refresh", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className={isFetching ? "animate-spin" : ""}><polyline points="23 4 23 10 17 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> },
             ].map(btn => (
-              <button key={btn.label} aria-label={btn.label}
+              <button key={btn.label} aria-label={btn.label} onClick={btn.label === "Refresh" ? () => void refetch() : undefined}
                 className="flex h-9 w-9 items-center justify-center rounded-lg border border-stroke bg-white text-dark transition hover:bg-gray-50 dark:border-dark-3 dark:bg-gray-dark dark:text-white dark:hover:bg-dark-2 sm:w-auto sm:gap-1.5 sm:px-3">
                 {btn.icon}
                 <span className="hidden sm:inline text-sm font-medium">{btn.label}</span>
@@ -207,7 +206,7 @@ export default function SuperAdminReportsPage() {
               key={col.id}
               status={col.id}
               reports={filtered.filter(r => r.status === col.id)}
-              loading={loading}
+              loading={isLoading}
               dragOverCol={dragOverCol}
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}

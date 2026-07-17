@@ -4,11 +4,12 @@ import { CalendarFilterBar, EMPTY_CAL_FILTERS } from "@/components/super-admin/c
 import { CalendarGrid }     from "@/components/super-admin/calendar/CalendarGrid";
 import { CalendarKpiCards } from "@/components/super-admin/calendar/CalendarKpiCards";
 import { DayDetailDrawer }  from "@/components/super-admin/calendar/DayDetailDrawer";
-import { generateMonthData } from "@/data/calendar";
+import { useCalendarEvents } from "@/hooks/useCalendar";
+import { mapCalendarEventsToDays } from "@/lib/calendar-adapters";
 import { cn } from "@/lib/utils";
 import { CalendarFilters, DayData } from "@/types/calendar";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 const MONTHS=["Yanvar","Fevral","Mart","Aprel","May","Iyun","Iyul","Avgust","Sentabr","Oktabr","Noyabr","Dekabr"];
 
@@ -16,19 +17,12 @@ export default function SuperAdminCalendarPage(){
   const today=new Date();
   const [year,setYear]=useState(today.getFullYear());
   const [month,setMonth]=useState(today.getMonth());
-  const [loading,setLoading]=useState(true);
-  const [rawData,setRawData]=useState<DayData[]>([]);
   const [filters,setFilters]=useState<CalendarFilters>(EMPTY_CAL_FILTERS);
   const [selectedDay,setSelectedDay]=useState<DayData|null>(null);
   const [dateFrom,setDateFrom]=useState("");
   const [dateTo,setDateTo]=useState("");
-
-  const loadData=useCallback(()=>{
-    setLoading(true);
-    setTimeout(()=>{ setRawData(generateMonthData(year,month)); setLoading(false); },600);
-  },[year,month]);
-
-  useEffect(()=>{loadData();},[loadData]);
+  const { data: events = [], isLoading, isFetching, refetch } = useCalendarEvents({ year, month: month + 1 });
+  const rawData = useMemo(() => mapCalendarEventsToDays(events, year, month), [events, year, month]);
 
   const prevMonth=()=>{ if(month===0){setYear(y=>y-1);setMonth(11);}else setMonth(m=>m-1); };
   const nextMonth=()=>{ if(month===11){setYear(y=>y+1);setMonth(0);}else setMonth(m=>m+1); };
@@ -78,7 +72,7 @@ export default function SuperAdminCalendarPage(){
             </div>
             {[
               {title:"Export",icon:<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>},
-              {title:"Yangilash",icon:<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><polyline points="23 4 23 10 17 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,onClick:loadData},
+              {title:"Yangilash",icon:<svg width="15" height="15" viewBox="0 0 24 24" fill="none" className={isFetching ? "animate-spin" : ""}><polyline points="23 4 23 10 17 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,onClick:()=>void refetch()},
             ].map(btn=>(
               <button key={btn.title} onClick={btn.onClick} title={btn.title} aria-label={btn.title}
                 className="flex h-9 w-9 items-center justify-center rounded-lg border border-stroke bg-white text-gray-500 transition hover:border-primary/60 hover:text-primary dark:border-dark-3 dark:bg-gray-dark dark:text-dark-6">
@@ -89,7 +83,7 @@ export default function SuperAdminCalendarPage(){
         </div>
 
         {/* KPI */}
-        <CalendarKpiCards loading={loading}/>
+        <CalendarKpiCards loading={isLoading} data={filteredData}/>
 
         {/* Filters + month nav */}
         <div className="flex flex-col gap-3 rounded-xl border border-stroke bg-white p-4 shadow-sm dark:border-dark-3 dark:bg-gray-dark sm:flex-row sm:items-center sm:justify-between">
@@ -132,7 +126,7 @@ export default function SuperAdminCalendarPage(){
         </div>
 
         {/* Grid */}
-        <CalendarGrid year={year} month={month} data={filteredData} loading={loading} onDayClick={setSelectedDay}/>
+        <CalendarGrid year={year} month={month} data={filteredData} loading={isLoading} onDayClick={setSelectedDay}/>
       </div>
 
       <DayDetailDrawer day={selectedDay} onClose={()=>setSelectedDay(null)}/>

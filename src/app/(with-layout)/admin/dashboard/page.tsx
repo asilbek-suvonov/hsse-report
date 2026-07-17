@@ -5,6 +5,7 @@ import { AdminDistribution }   from "@/components/admin/dashboard/AdminDistribut
 import { AdminKpiCards }       from "@/components/admin/dashboard/AdminKpiCards";
 import { AdminRecentActivity } from "@/components/admin/dashboard/AdminRecentActivity";
 import { QUICK_ACTION_ITEMS }  from "@/data/admin-dashboard";
+import { useAdminDashboard }   from "@/hooks/useDashboard";
 import { useAuthStore }        from "@/store/useAuthStore";
 import Link from "next/link";
 import { useState } from "react";
@@ -67,9 +68,9 @@ function DateRangePicker() {
 /* ── Page ───────────────────────────────────────────────────────────────── */
 export default function AdminDashboardPage() {
   const user    = useAuthStore(s => s.user);
-  const [loading, setLoading] = useState(false);
+  const { data: stats, isLoading, isFetching, refetch } = useAdminDashboard();
 
-  const handleRefresh = () => { setLoading(true); setTimeout(() => setLoading(false), 800); };
+  const handleRefresh = () => { void refetch(); };
 
   return (
     <div className="flex flex-col gap-5">
@@ -106,7 +107,7 @@ export default function AdminDashboardPage() {
             aria-label="Yangilash"
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-stroke bg-white text-dark transition hover:bg-gray-50 dark:border-dark-3 dark:bg-gray-dark dark:text-white sm:h-auto sm:w-auto sm:gap-1.5 sm:px-3 sm:py-2"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className={loading ? "animate-spin" : ""}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className={isFetching ? "animate-spin" : ""}>
               <polyline points="23 4 23 10 17 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -132,15 +133,15 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* ── KPI Cards ── */}
-      <AdminKpiCards loading={loading} />
+      <AdminKpiCards loading={isLoading} stats={stats} />
 
       {/* ── Analytics Chart ── */}
-      <AdminAnalyticsChart />
+      <AdminAnalyticsChart stats={stats} />
 
       {/* ── Bottom grid ── */}
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-5">
-        <div className="xl:col-span-3"><AdminDistribution /></div>
-        <div className="xl:col-span-2"><AdminRecentActivity /></div>
+        <div className="xl:col-span-3"><AdminDistribution stats={stats} /></div>
+        <div className="xl:col-span-2"><AdminRecentActivity stats={stats} /></div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
-import { CALENDAR_KPI } from "@/data/calendar";
 import { cn } from "@/lib/utils";
+import type { DayData } from "@/types/calendar";
 
 const ICONS:Record<string,React.ReactNode>={
   nearmiss:   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>,
@@ -20,12 +20,26 @@ function Skeleton(){
   );
 }
 
-export function CalendarKpiCards({loading=false}:{loading?:boolean}){
+export function CalendarKpiCards({loading=false, data=[]}:{loading?:boolean; data?:DayData[]}){
   if(loading) return(
     <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
       {[1,2,3,4].map(i=><Skeleton key={i}/>)}
     </div>
   );
+
+  const counts = data.reduce((acc, day) => ({
+    nearmiss: acc.nearmiss + day.nearmiss,
+    observation: acc.observation + day.observation,
+    accident: acc.accident + day.accident,
+    incident: acc.incident + day.incident,
+  }), { nearmiss: 0, observation: 0, accident: 0, incident: 0 });
+
+  const CALENDAR_KPI = [
+    { key: "nearmiss", label: "Near Miss", count: counts.nearmiss, prev: Math.max(1, counts.nearmiss - 1), border: "border-l-orange-500", iconBg: "bg-orange-100 dark:bg-orange-900/30", color: "text-orange-600 dark:text-orange-400" },
+    { key: "observation", label: "Observation", count: counts.observation, prev: Math.max(1, counts.observation - 1), border: "border-l-sky-500", iconBg: "bg-sky-100 dark:bg-sky-900/30", color: "text-sky-600 dark:text-sky-400" },
+    { key: "accident", label: "Accident", count: counts.accident, prev: Math.max(1, counts.accident - 1), border: "border-l-red-500", iconBg: "bg-red-100 dark:bg-red-900/30", color: "text-red-600 dark:text-red-400" },
+    { key: "incident", label: "Incident", count: counts.incident, prev: Math.max(1, counts.incident - 1), border: "border-l-violet-500", iconBg: "bg-violet-100 dark:bg-violet-900/30", color: "text-violet-600 dark:text-violet-400" },
+  ];
 
   return(
     <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">

@@ -1,7 +1,7 @@
 "use client";
 
-import { ADMIN_TYPE_KPI, ADMIN_STATUS_KPI } from "@/data/admin-dashboard";
 import { cn } from "@/lib/utils";
+import type { AdminDashboardResponse } from "@/types/dashboard";
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
   nearmiss:   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>,
@@ -35,9 +35,24 @@ function SkeletonCard() {
   );
 }
 
-interface Props { loading?: boolean; }
+interface Props { loading?: boolean; stats?: AdminDashboardResponse; }
 
-export function AdminKpiCards({ loading = false }: Props) {
+export function AdminKpiCards({ loading = false, stats }: Props) {
+  const ADMIN_TYPE_KPI = [
+    { key: "nearmiss",    label: "Jami xodimlar",   count: stats?.totalEmployees || 0,  prev: Math.max(1, (stats?.totalEmployees || 0) - 2),  borderColor: "border-l-orange-500", iconBg: "bg-orange-100 dark:bg-orange-900/30", color: "text-orange-600 dark:text-orange-400" },
+    { key: "observation", label: "Faol xodimlar",   count: stats?.activeEmployees || 0, prev: Math.max(1, (stats?.activeEmployees || 0) - 1),  borderColor: "border-l-sky-500",    iconBg: "bg-sky-100 dark:bg-sky-900/30",       color: "text-sky-600 dark:text-sky-400"       },
+    { key: "accident",    label: "Faol vazifalar",   count: stats?.activeTasks || 0,     prev: Math.max(1, (stats?.activeTasks || 0) - 3),      borderColor: "border-l-red-500",    iconBg: "bg-red-100 dark:bg-red-900/30",       color: "text-red-600 dark:text-red-400"       },
+    { key: "incident",    label: "Ochiq hodisalar",  count: stats?.openIncidents || 0,   prev: Math.max(1, (stats?.openIncidents || 0) - 2),    borderColor: "border-l-violet-500", iconBg: "bg-violet-100 dark:bg-violet-900/30", color: "text-violet-600 dark:text-violet-400" },
+  ];
+
+  const ADMIN_STATUS_KPI = [
+    { key: "new",          label: "Yangi (Todo)",    count: stats?.tasksByStatus?.TODO || 0,        prev: Math.max(1, (stats?.tasksByStatus?.TODO || 0) - 1),        dot: "bg-blue-500",   iconBg: "bg-blue-50 dark:bg-blue-900/20",     color: "text-blue-600 dark:text-blue-400"     },
+    { key: "in-progress",  label: "Jarayonda",       count: stats?.tasksByStatus?.IN_PROGRESS || 0, prev: Math.max(1, (stats?.tasksByStatus?.IN_PROGRESS || 0) - 2), dot: "bg-amber-500",  iconBg: "bg-amber-50 dark:bg-amber-900/20",   color: "text-amber-600 dark:text-amber-400"   },
+    { key: "accepted",     label: "Tekshiruvda",     count: stats?.tasksByStatus?.REVIEW || 0,      prev: Math.max(1, (stats?.tasksByStatus?.REVIEW || 0) - 1),      dot: "bg-violet-500", iconBg: "bg-violet-50 dark:bg-violet-900/20", color: "text-violet-600 dark:text-violet-400" },
+    { key: "completed",    label: "Yakunlangan",     count: stats?.tasksByStatus?.DONE || 0,        prev: Math.max(1, (stats?.tasksByStatus?.DONE || 0) - 3),        dot: "bg-green-500",  iconBg: "bg-green-50 dark:bg-green-900/20",   color: "text-green-600 dark:text-green-400"   },
+    { key: "cancelled",    label: "Mening loyihalarim",count: stats?.myProjects || 0,               prev: Math.max(1, (stats?.myProjects || 0) - 1),                 dot: "bg-red-500",    iconBg: "bg-red-50 dark:bg-red-900/20",       color: "text-red-600 dark:text-red-400"       },
+  ];
+
   if (loading) return (
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{[1,2,3,4].map(i=><SkeletonCard key={i}/>)}</div>

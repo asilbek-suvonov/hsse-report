@@ -32,3 +32,45 @@ export interface CalendarFilters {
   severity:     Severity[];
   status:       ReportStatus[];
 }
+
+export interface CalendarEventResponse {
+  id: number;
+  title: string;
+  description?: string | null;
+  startTime: string;
+  endTime?: string | null;
+  branchId?: number | null;
+  branchName?: string | null;
+  createdBy?: {
+    id: number;
+    fullName: string;
+    email: string;
+    avatarUrl?: string | null;
+  } | null;
+}
+
+export interface CalendarParams {
+  month: number;
+  year: number;
+}
+
+export interface CalendarEventResponse {
+  id: number;
+  title: string;
+  description?: string | null;
+  startTime: string;
+  endTime?: string | null;
+  branchId?: number | null;
+  branchName?: string | null;
+  createdBy?: {
+    id: number;
+    fullName: string;
+    email: string;
+    avatarUrl?: string | null;
+  } | null;
+}
+
+export interface CalendarParams {
+  month: number;
+  year: number;
+}

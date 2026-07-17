@@ -1,11 +1,50 @@
 "use client";
 
-import { DISTRIBUTION_DATA } from "@/data/admin-dashboard";
 import { cn } from "@/lib/utils";
+import type { AdminDashboardResponse } from "@/types/dashboard";
 import { useState } from "react";
 
-export function AdminDistribution() {
+interface Props {
+  stats?: AdminDashboardResponse;
+}
+
+function buildDistributionData(stats?: AdminDashboardResponse) {
+  const taskStatuses = stats?.tasksByStatus || {};
+  return [
+    {
+      type: "tasks", label: "Vazifalar", total: stats?.activeTasks || 0, color: "#F97316",
+      statuses: [
+        { label: "Yangi", count: taskStatuses.TODO || 0, color: "#3B82F6" },
+        { label: "Jarayonda", count: taskStatuses.IN_PROGRESS || 0, color: "#F59E0B" },
+        { label: "Tekshiruvda", count: taskStatuses.REVIEW || 0, color: "#8B5CF6" },
+        { label: "Yakunlangan", count: taskStatuses.DONE || 0, color: "#22C55E" },
+      ],
+    },
+    {
+      type: "employees", label: "Xodimlar", total: stats?.totalEmployees || 0, color: "#0EA5E9",
+      statuses: [
+        { label: "Faol", count: stats?.activeEmployees || 0, color: "#22C55E" },
+        { label: "Nofaol", count: Math.max(0, (stats?.totalEmployees || 0) - (stats?.activeEmployees || 0)), color: "#EF4444" },
+      ],
+    },
+    {
+      type: "incidents", label: "Hodisalar", total: stats?.openIncidents || 0, color: "#8B5CF6",
+      statuses: [
+        { label: "Ochiq", count: stats?.openIncidents || 0, color: "#8B5CF6" },
+      ],
+    },
+    {
+      type: "projects", label: "Loyihalar", total: stats?.myProjects || 0, color: "#EF4444",
+      statuses: [
+        { label: "Mening loyihalarim", count: stats?.myProjects || 0, color: "#EF4444" },
+      ],
+    },
+  ];
+}
+
+export function AdminDistribution({ stats }: Props) {
   const [hoveredType, setHoveredType] = useState<string | null>(null);
+  const DISTRIBUTION_DATA = buildDistributionData(stats);
   const total = DISTRIBUTION_DATA.reduce((s, d) => s + d.total, 0);
 
   return (
@@ -20,7 +59,7 @@ export function AdminDistribution() {
     
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {DISTRIBUTION_DATA.map(d => {
-          const pct = Math.round((d.total / total) * 100);
+          const pct = total > 0 ? Math.round((d.total / total) * 100) : 0;
           const isHovered = hoveredType === d.type;
           return (
             <div

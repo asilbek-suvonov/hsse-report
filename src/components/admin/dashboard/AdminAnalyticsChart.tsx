@@ -1,16 +1,54 @@
 "use client";
 
-import { ANALYTICS_DATA, CHART_PERIODS } from "@/data/admin-dashboard";
+import { CHART_PERIODS } from "@/data/admin-dashboard";
 import { cn } from "@/lib/utils";
+import type { AdminDashboardResponse } from "@/types/dashboard";
 import type { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-export function AdminAnalyticsChart() {
-  const [period, setPeriod] = useState<keyof typeof ANALYTICS_DATA>("monthly");
-  const data = ANALYTICS_DATA[period];
+interface Props {
+  stats?: AdminDashboardResponse;
+}
+
+const EMPTY_ANALYTICS_DATA = {
+  daily: { categories: ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"], nearmiss: [0, 0, 0, 0, 0, 0, 0], observation: [0, 0, 0, 0, 0, 0, 0], accident: [0, 0, 0, 0, 0, 0, 0], incident: [0, 0, 0, 0, 0, 0, 0] },
+  weekly: { categories: ["1-hafta", "2-hafta", "3-hafta", "4-hafta"], nearmiss: [0, 0, 0, 0], observation: [0, 0, 0, 0], accident: [0, 0, 0, 0], incident: [0, 0, 0, 0] },
+  monthly: { categories: ["Todo", "Jarayonda", "Tekshiruvda", "Yakunlangan"], nearmiss: [0, 0, 0, 0], observation: [0, 0, 0, 0], accident: [0, 0, 0, 0], incident: [0, 0, 0, 0] },
+  yearly: { categories: ["Joriy yil"], nearmiss: [0], observation: [0], accident: [0], incident: [0] },
+};
+
+function buildAnalyticsData(stats?: AdminDashboardResponse): typeof EMPTY_ANALYTICS_DATA {
+  if (!stats) return EMPTY_ANALYTICS_DATA;
+  const todo = stats.tasksByStatus?.TODO || 0;
+  const progress = stats.tasksByStatus?.IN_PROGRESS || 0;
+  const review = stats.tasksByStatus?.REVIEW || 0;
+  const done = stats.tasksByStatus?.DONE || 0;
+
+  return {
+    ...EMPTY_ANALYTICS_DATA,
+    monthly: {
+      categories: ["Todo", "Jarayonda", "Tekshiruvda", "Yakunlangan"],
+      nearmiss: [todo, 0, 0, 0],
+      observation: [0, progress, 0, 0],
+      accident: [0, 0, review, 0],
+      incident: [0, 0, 0, done],
+    },
+    yearly: {
+      categories: ["Xodimlar", "Faol", "Vazifalar", "Hodisalar"],
+      nearmiss: [stats.totalEmployees || 0, 0, 0, 0],
+      observation: [0, stats.activeEmployees || 0, 0, 0],
+      accident: [0, 0, stats.activeTasks || 0, 0],
+      incident: [0, 0, 0, stats.openIncidents || 0],
+    },
+  };
+}
+
+export function AdminAnalyticsChart({ stats }: Props) {
+  const [period, setPeriod] = useState<keyof typeof EMPTY_ANALYTICS_DATA>("monthly");
+  const data = buildAnalyticsData(stats)[period];
 
   const options: ApexOptions = {
     chart: {
@@ -87,7 +125,7 @@ export function AdminAnalyticsChart() {
           {CHART_PERIODS.map(p => (
             <button
               key={p.key}
-              onClick={() => setPeriod(p.key as keyof typeof ANALYTICS_DATA)}
+              onClick={() => setPeriod(p.key as keyof typeof EMPTY_ANALYTICS_DATA)}
               className={cn(
                 "rounded-md px-3 py-1.5 text-xs font-medium transition",
                 period === p.key

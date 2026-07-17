@@ -2,13 +2,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/store/useAuthStore";
 import { tokenStore } from "@/api/client";
-import { LoginRequest, ChangePasswordRequest } from "@/types/auth";
+import { LoginRequest, ChangePasswordRequest, UserResponse } from "@/types/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const SESSION_KEY = "hsse_mock_session";
 
-export function saveSessionData(user: any, accessToken: string, refreshToken: string) {
+function getErrorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback;
+}
+
+export function saveSessionData(user: UserResponse, accessToken: string, refreshToken: string) {
   if (typeof window === "undefined") return;
 
   // Save JWT tokens in localStorage/tokenStore
@@ -16,14 +20,14 @@ export function saveSessionData(user: any, accessToken: string, refreshToken: st
   tokenStore.setRefresh(refreshToken);
 
   // Normalize role
-  const normalizedRole = (user.role || "").toLowerCase().replace("-", "_");
+  const normalizedRole = user.role.toLowerCase().replace("-", "_");
 
   // Create session user object compatible with middleware & UserInfo
   const sessionUser = {
     id: String(user.id),
-    name: user.fullName || user.name || "",
+    name: user.fullName || "",
     email: user.email || "",
-    image: user.avatarUrl || user.image || "",
+    image: user.avatarUrl || "",
     role: normalizedRole,
   };
 
@@ -71,9 +75,8 @@ export function useLogin() {
         toast.error(response.message || "Tizimga kirishda xatolik yuz berdi");
       }
     },
-    onError: (error: any) => {
-      const msg = error?.message || "Email yoki parol noto'g'ri";
-      toast.error(msg);
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Email yoki parol noto'g'ri"));
     },
   });
 }
@@ -124,8 +127,8 @@ export function useChangePassword() {
         toast.error(response.message || "Parolni o'zgartirishda xatolik");
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Xatolik yuz berdi");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Xatolik yuz berdi"));
     },
   });
 }

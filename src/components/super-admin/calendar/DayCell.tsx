@@ -1,6 +1,6 @@
 "use client";
 
-import { getDayState } from "@/data/calendar";
+import { getCalendarDayState } from "@/lib/calendar-adapters";
 import { cn } from "@/lib/utils";
 import { DayData } from "@/types/calendar";
 
@@ -27,7 +27,7 @@ const BADGE = {
 export function DayCell({ day, isToday, onClick }: Props) {
   if (!day) return <div className="min-h-[60px] rounded-lg sm:min-h-[110px] sm:rounded-xl" />;
 
-  const state  = getDayState(day);
+  const state  = getCalendarDayState(day);
   const dayNum = parseInt(day.date.split("-")[2]);
   const total  = day.nearmiss + day.observation + day.accident + day.incident;
   const maxVal = Math.max(day.nearmiss, day.observation, day.accident, day.incident, 1);

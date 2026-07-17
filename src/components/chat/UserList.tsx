@@ -1,6 +1,6 @@
 "use client";
 
-import { LAST_MESSAGES } from "@/data/chat";
+import type { ChatLastMessage } from "@/lib/chat-adapters";
 import { cn } from "@/lib/utils";
 import { ChatUser } from "@/types/chat";
 import Image from "next/image";
@@ -16,9 +16,10 @@ interface Props {
   users: ChatUser[];
   activeId: string | null;
   onSelect: (u: ChatUser) => void;
+  lastMessages: Record<string, ChatLastMessage>;
 }
 
-export function UserList({ users, activeId, onSelect }: Props) {
+export function UserList({ users, activeId, onSelect, lastMessages }: Props) {
   const [q, setQ] = useState("");
 
   const filtered = users.filter(u =>
@@ -67,7 +68,7 @@ export function UserList({ users, activeId, onSelect }: Props) {
           </div>
         )}
         {filtered.map(user => {
-          const last   = LAST_MESSAGES[user.id];
+          const last   = lastMessages[user.id];
           const active = activeId === user.id;
           return (
             <button

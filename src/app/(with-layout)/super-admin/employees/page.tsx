@@ -2,7 +2,8 @@
 
 import { EmployeeDetailDrawer } from "@/components/super-admin/employees/EmployeeDetailDrawer";
 import { EmployeeSheet }        from "@/components/super-admin/employees/EmployeeSheet";
-import { MOCK_EMPLOYEES }        from "@/data/employees";
+import { useBranches, useCreateEmployee, useDeleteEmployee, useDepartments, useEmployees, useUpdateEmployee } from "@/hooks/useEmployees";
+import { mapApiEmployeeToEmployee, mapEmployeeFormToCreateRequest, mapEmployeeFormToUpdateRequest } from "@/lib/employee-adapters";
 import { cn } from "@/lib/utils";
 import { Employee } from "@/types/employee";
 import Image from "next/image";
@@ -137,7 +138,6 @@ function StatsCards({ employees }: { employees: Employee[] }) {
 
 /* ── Main Page ────────────────────────────────────────────────────────────── */
 export default function SuperAdminEmployeesPage() {
-  const [employees, setEmployees] = useState<Employee[]>(MOCK_EMPLOYEES);
   const [search,    setSearch]    = useState("");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
@@ -147,30 +147,33 @@ export default function SuperAdminEmployeesPage() {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
+  const { data, isLoading } = useEmployees({ page: 0, size: 100, search: search || undefined });
+  const { data: branchesData } = useBranches({ page: 0, size: 100 });
+  const { data: departmentsData } = useDepartments();
+  const createEmployee = useCreateEmployee();
+  const updateEmployee = useUpdateEmployee();
+  const deleteEmployee = useDeleteEmployee();
+  const employees = useMemo(() => (data?.content || []).map(mapApiEmployeeToEmployee), [data]);
+  const branchOptions = useMemo(() => (branchesData?.content || []).map((branch) => branch.name), [branchesData]);
+  const departmentOptions = useMemo(() => (departmentsData || []).map((department) => department.name), [departmentsData]);
+  const positionOptions = useMemo(() => Array.from(new Set(employees.map((employee) => employee.position).filter(Boolean))), [employees]);
 
   const openAdd  = () => { setEditTarget(null); setSheetOpen(true); };
   const openEdit = (e: Employee) => { setEditTarget(e); setSheetOpen(true); };
 
-  const handleSave = (data: Omit<Employee,"id"|"employeeId"|"createdAt"|"lastLogin"> & { id?: string }) => {
+  const handleSave = (data: Omit<Employee,"id"|"employeeId"|"createdAt"|"lastLogin"> & { id?: string; password?: string }) => {
+    const departmentId = departmentsData?.find((department) => department.name === data.department)?.id ?? null;
     if (data.id) {
-      setEmployees(prev => prev.map(e => e.id === data.id ? { ...e, ...data } as Employee : e));
+      updateEmployee.mutate({ id: data.id, data: mapEmployeeFormToUpdateRequest({ ...data, departmentId }) });
     } else {
-      const newEmp: Employee = {
-        ...data as any,
-        id: `emp-${Date.now()}`,
-        employeeId: `EMP-${String(employees.length + 1).padStart(3, "0")}`,
-        createdAt: new Date().toISOString().slice(0, 10),
-        lastLogin: "—",
-        avatar: data.avatar || `https://avatar.vercel.sh/${data.firstName}`,
-      };
-      setEmployees(prev => [newEmp, ...prev]);
+      if (!data.password) return;
+      createEmployee.mutate(mapEmployeeFormToCreateRequest({ ...data, password: data.password, departmentId }));
     }
     setSheetOpen(false);
     setEditTarget(null);
   };
-
   const handleDelete = (id: string) => {
-    setEmployees(prev => prev.filter(e => e.id !== id));
+    deleteEmployee.mutate(id);
     setDeleteTarget(null);
   };
 
@@ -269,7 +272,15 @@ export default function SuperAdminEmployeesPage() {
                 </tr>
               </thead>
               <tbody>
-                {paged.length === 0 ? (
+                {isLoading ? (
+                  Array.from({ length: PAGE_SIZE }).map((_, index) => (
+                    <tr key={index} className="border-b border-stroke dark:border-dark-3">
+                      <td colSpan={9} className="px-4 py-4">
+                        <div className="h-8 animate-pulse rounded bg-gray-100 dark:bg-dark-3" />
+                      </td>
+                    </tr>
+                  ))
+                ) : paged.length === 0 ? (
                   <tr><td colSpan={9} className="py-16 text-center text-gray-400 dark:text-dark-6">
                     <div className="flex flex-col items-center gap-3">
                       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="opacity-30"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
@@ -353,7 +364,15 @@ export default function SuperAdminEmployeesPage() {
       </div>
 
       {/* Drawers & Dialogs */}
-      <EmployeeSheet open={sheetOpen} onClose={() => { setSheetOpen(false); setEditTarget(null); }} onSave={handleSave} initial={editTarget} />
+      <EmployeeSheet
+        open={sheetOpen}
+        onClose={() => { setSheetOpen(false); setEditTarget(null); }}
+        onSave={handleSave}
+        initial={editTarget}
+        branches={branchOptions}
+        departments={departmentOptions}
+        positions={positionOptions}
+      />
       <EmployeeDetailDrawer employee={viewTarget} onClose={() => setViewTarget(null)} onEdit={openEdit} />
       {deleteTarget && (
         <ConfirmDialog
@@ -365,3 +384,4 @@ export default function SuperAdminEmployeesPage() {
     </>
   );
 }
+

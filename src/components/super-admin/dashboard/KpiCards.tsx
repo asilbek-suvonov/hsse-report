@@ -1,7 +1,7 @@
 "use client";
 
-import { KPI_DATA } from "@/data/dashboard";
 import { cn } from "@/lib/utils";
+import type { SuperAdminDashboardResponse } from "@/types/dashboard";
 
 const ICONS: Record<string,React.ReactNode> = {
   nearmiss:   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>,
@@ -20,12 +20,51 @@ function Skeleton(){
   );
 }
 
-export function KpiCards({loading=false}:{loading?:boolean}){
+export function KpiCards({loading=false, stats}:{loading?:boolean; stats?: SuperAdminDashboardResponse}){
   if(loading) return(
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {[1,2,3,4].map(i=><Skeleton key={i}/>)}
     </div>
   );
+
+  const KPI_DATA = [
+    {
+      key: "incident",
+      label: "Jami hodisalar",
+      count: stats?.totalIncidents || 0,
+      prev: Math.max(1, (stats?.totalIncidents || 0) - 3),
+      borderColor: "border-l-violet-500",
+      iconBg: "bg-violet-100 dark:bg-violet-900/30",
+      color: "text-violet-600 dark:text-violet-400",
+    },
+    {
+      key: "nearmiss",
+      label: "Ochiq hodisalar",
+      count: stats?.openIncidents || 0,
+      prev: Math.max(1, (stats?.openIncidents || 0) - 1),
+      borderColor: "border-l-orange-500",
+      iconBg: "bg-orange-100 dark:bg-orange-900/30",
+      color: "text-orange-600 dark:text-orange-400",
+    },
+    {
+      key: "observation",
+      label: "Hal qilinganlar",
+      count: stats?.resolvedIncidents || 0,
+      prev: Math.max(1, (stats?.resolvedIncidents || 0) - 2),
+      borderColor: "border-l-sky-500",
+      iconBg: "bg-sky-100 dark:bg-sky-900/30",
+      color: "text-sky-600 dark:text-sky-400",
+    },
+    {
+      key: "accident",
+      label: "Jami vazifalar",
+      count: stats?.totalTasks || 0,
+      prev: Math.max(1, (stats?.totalTasks || 0) - 4),
+      borderColor: "border-l-red-500",
+      iconBg: "bg-red-100 dark:bg-red-900/30",
+      color: "text-red-600 dark:text-red-400",
+    },
+  ];
 
   return(
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

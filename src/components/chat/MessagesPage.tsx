@@ -1,9 +1,11 @@
 "use client";
 
-import { CHAT_USERS, MOCK_MESSAGES } from "@/data/chat";
+import { useMessages, useSendMessage } from "@/hooks/useMessages";
+import { buildChatMessages, buildChatUsers, buildLastMessages } from "@/lib/chat-adapters";
 import { cn } from "@/lib/utils";
-import { ChatMessage, ChatUser } from "@/types/chat";
-import { useState } from "react";
+import { useAuthStore } from "@/store/useAuthStore";
+import { ChatUser } from "@/types/chat";
+import { useMemo, useState } from "react";
 import { ChatWindow } from "./ChatWindow";
 import { UserInfoModal } from "./UserInfoModal";
 import { UserList } from "./UserList";
@@ -30,10 +32,16 @@ function EmptyState() {
 
 /* ── Main component ──────────────────────────────────────────────────────── */
 export function MessagesPage() {
-  const [messages,  setMessages]  = useState<Record<string, ChatMessage[]>>(MOCK_MESSAGES);
   const [activeUser, setActiveUser] = useState<ChatUser | null>(null);
   const [showInfo,   setShowInfo]   = useState(false);
   const [showList,   setShowList]   = useState(true);
+  const currentUser = useAuthStore((state) => state.user);
+  const currentUserId = currentUser?.id ? Number(currentUser.id) : null;
+  const { data: apiMessages = [] } = useMessages();
+  const sendMessage = useSendMessage();
+  const users = useMemo(() => buildChatUsers(apiMessages, currentUserId), [apiMessages, currentUserId]);
+  const messages = useMemo(() => buildChatMessages(apiMessages, currentUserId), [apiMessages, currentUserId]);
+  const lastMessages = useMemo(() => buildLastMessages(apiMessages, currentUserId), [apiMessages, currentUserId]);
 
   const handleSelect = (user: ChatUser) => {
     setActiveUser(user);
@@ -43,20 +51,7 @@ export function MessagesPage() {
 
   const handleSend = (text: string) => {
     if (!activeUser) return;
-    const msg: ChatMessage = {
-      id:        `msg-${Date.now()}`,
-      chatId:    activeUser.id,
-      senderId:  "me",
-      text,
-      type:      "text",
-      status:    "sent",
-      timestamp: new Date().toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit" }),
-      date:      new Date().toISOString().slice(0, 10),
-    };
-    setMessages(prev => ({
-      ...prev,
-      [activeUser.id]: [...(prev[activeUser.id] ?? []), msg],
-    }));
+    sendMessage.mutate({ receiverId: Number(activeUser.id), content: text });
   };
 
   return (
@@ -91,9 +86,10 @@ export function MessagesPage() {
           )}
         >
           <UserList
-            users={CHAT_USERS}
+            users={users}
             activeId={activeUser?.id ?? null}
             onSelect={handleSelect}
+            lastMessages={lastMessages}
           />
         </div>
 

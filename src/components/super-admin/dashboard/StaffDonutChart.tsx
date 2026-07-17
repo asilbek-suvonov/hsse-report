@@ -1,12 +1,17 @@
 "use client";
 
-import { STAFF_DATA } from "@/data/dashboard";
 import type { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import type { SuperAdminDashboardResponse } from "@/types/dashboard";
 
 const Chart = dynamic(()=>import("react-apexcharts"),{ssr:false});
 
-export function StaffDonutChart(){
+export function StaffDonutChart({ stats }: { stats?: SuperAdminDashboardResponse }){
+  const STAFF_DATA = [
+    { name: "Ishchilar", amount: stats?.totalClients || 0 },
+    { name: "Adminlar",  amount: stats?.totalAdmins || 0  },
+  ];
+
   const total=STAFF_DATA.reduce((s,d)=>s+d.amount,0);
 
   const options:ApexOptions={

@@ -1,7 +1,7 @@
 "use client";
 
-import { RECENT_ACTIVITY } from "@/data/admin-dashboard";
 import { cn } from "@/lib/utils";
+import type { AdminDashboardResponse } from "@/types/dashboard";
 
 const ACTIVITY_ICONS: Record<string, React.ReactNode> = {
   created:   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/></svg>,
@@ -10,7 +10,24 @@ const ACTIVITY_ICONS: Record<string, React.ReactNode> = {
   progress:  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
 };
 
-export function AdminRecentActivity() {
+interface Props {
+  stats?: AdminDashboardResponse;
+}
+
+function buildRecentActivity(stats?: AdminDashboardResponse) {
+  return (stats?.recentIncidents || []).slice(0, 6).map((incident) => ({
+    id: String(incident.id),
+    type: incident.status === "RESOLVED" || incident.status === "CLOSED" ? "completed" : incident.status === "INVESTIGATING" ? "progress" : "created",
+    user: incident.reportedBy?.fullName || incident.branchName || "Admin",
+    action: incident.title,
+    reportId: `INC-${incident.id}`,
+    time: incident.createdAt ? new Date(incident.createdAt).toLocaleDateString("uz-UZ") : "",
+    dotColor: incident.status === "RESOLVED" || incident.status === "CLOSED" ? "#22C55E" : incident.status === "INVESTIGATING" ? "#F59E0B" : "#3B82F6",
+  }));
+}
+
+export function AdminRecentActivity({ stats }: Props) {
+  const RECENT_ACTIVITY = buildRecentActivity(stats);
   return (
     <div className="rounded-2xl border border-stroke bg-white p-6 shadow-sm dark:border-dark-3 dark:bg-gray-dark">
       <div className="mb-6 flex items-center justify-between">
@@ -29,7 +46,9 @@ export function AdminRecentActivity() {
         {/* Mukammal joylashgan markaziy chiziq */}
         <div className="absolute bottom-3 left-[11px] top-3 w-[2px] rounded-full bg-slate-200 dark:bg-dark-3" />
 
-        {RECENT_ACTIVITY.map((item, i) => (
+        {RECENT_ACTIVITY.length === 0 ? (
+          <div className="text-sm text-gray-500 dark:text-dark-6">Hozircha faoliyat yo'q</div>
+        ) : RECENT_ACTIVITY.map((item, i) => (
           <div
             key={item.id}
             className={cn(

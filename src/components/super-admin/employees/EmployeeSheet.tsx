@@ -1,6 +1,5 @@
 "use client";
 
-import { BRANCHES, DEPARTMENTS, POSITIONS } from "@/data/employees";
 import { cn } from "@/lib/utils";
 import {
   Employee,
@@ -247,12 +246,16 @@ interface Props {
   onSave: (
     data: Omit<Employee, "id" | "employeeId" | "createdAt" | "lastLogin"> & {
       id?: string;
+      password?: string;
     },
   ) => void;
   initial?: Employee | null;
+  branches?: string[];
+  departments?: string[];
+  positions?: string[];
 }
 
-export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
+export function EmployeeSheet({ open, onClose, onSave, initial, branches = [], departments = [], positions = [] }: Props) {
   const [form, setForm] = useState<FormData>(EMPTY);
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
@@ -286,6 +289,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
     if (!form.phone.trim()) e.phone = "Telefon kiritilishi shart";
     if (!form.branch) e.branch = "Filial tanlanishi shart";
     if (!form.department) e.department = "Bo'lim tanlanishi shart";
+    if (!initial && !password.trim()) e.password = "Parol kiritilishi shart";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -296,6 +300,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
     onSave({
       ...form,
       permissions: initial?.permissions ?? [],
+      ...(!initial ? { password } : {}),
       ...(initial ? { id: initial.id } : {}),
     });
   };
@@ -449,7 +454,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
                 <Label required>Filial</Label>
                 <Select value={form.branch} onChange={(v) => set("branch", v)}>
                   <option value="">Tanlang</option>
-                  {BRANCHES.map((b) => (
+                  {branches.map((b) => (
                     <option key={b} value={b}>
                       {b}
                     </option>
@@ -468,7 +473,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
                   onChange={(v) => set("department", v)}
                 >
                   <option value="">Tanlang</option>
-                  {DEPARTMENTS.map((d) => (
+                  {departments.map((d) => (
                     <option key={d} value={d}>
                       {d}
                     </option>
@@ -489,7 +494,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
                   onChange={(v) => set("position", v)}
                 >
                   <option value="">Tanlang</option>
-                  {POSITIONS.map((p) => (
+                  {positions.map((p) => (
                     <option key={p} value={p}>
                       {p}
                     </option>
@@ -539,7 +544,7 @@ export function EmployeeSheet({ open, onClose, onSave, initial }: Props) {
             <div className="grid grid-cols-2 gap-3 mb-20">
               {!initial && (
                 <div>
-                  <Label>Parol</Label>
+                  <Label required>Parol</Label>
                   <Input
                     value={password}
                     onChange={setPassword}

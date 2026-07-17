@@ -5,14 +5,15 @@ import { EMPTY_FILTERS, FilterPanel, type DashboardFilters } from "@/components/
 import { KpiCards }               from "@/components/super-admin/dashboard/KpiCards";
 import { ReportsCountChart }      from "@/components/super-admin/dashboard/ReportsCountChart";
 import { StaffDonutChart }        from "@/components/super-admin/dashboard/StaffDonutChart";
+import { useSuperAdminDashboard } from "@/hooks/useDashboard";
 import { useState } from "react";
 
 export default function SuperAdminDashboardPage(){
   const [filters,setFilters]=useState<DashboardFilters>(EMPTY_FILTERS);
-  const [loading,setLoading]=useState(false);
+  const { data: stats, isLoading } = useSuperAdminDashboard();
 
-  const handleSearch=()=>{ setLoading(true); setTimeout(()=>setLoading(false),800); };
-  const handleReset =()=>{ setFilters(EMPTY_FILTERS); setLoading(true); setTimeout(()=>setLoading(false),400); };
+  const handleSearch=()=>{};
+  const handleReset =()=>{ setFilters(EMPTY_FILTERS); };
 
   return(
     <div className="flex flex-col gap-6">
@@ -23,13 +24,13 @@ export default function SuperAdminDashboardPage(){
 
       <FilterPanel filters={filters} onChange={setFilters} onSearch={handleSearch} onReset={handleReset}/>
 
-      <KpiCards loading={loading}/>
+      <KpiCards loading={isLoading} stats={stats}/>
 
-      <ReportsCountChart/>
+      <ReportsCountChart stats={stats}/>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
-        <div className="xl:col-span-3"><CategoryAnalysisChart/></div>
-        <div className="xl:col-span-2"><StaffDonutChart/></div>
+        <div className="xl:col-span-3"><CategoryAnalysisChart stats={stats}/></div>
+        <div className="xl:col-span-2"><StaffDonutChart stats={stats}/></div>
       </div>
     </div>
   );

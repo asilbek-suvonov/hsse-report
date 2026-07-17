@@ -1,6 +1,5 @@
 "use client";
 
-import { USER_MEDIA } from "@/data/chat";
 import { cn } from "@/lib/utils";
 import { ChatUser, MediaItem } from "@/types/chat";
 import Image from "next/image";
@@ -9,6 +8,7 @@ import { useEffect, useState } from "react";
 const STATUS_LABEL: Record<string, string> = { online:"Online", away:"Away", offline:"Offline" };
 const STATUS_COLOR: Record<string, string> = { online:"text-green-500", away:"text-yellow-500", offline:"text-gray-400 dark:text-dark-6" };
 const STATUS_DOT:   Record<string, string> = { online:"bg-green-500", away:"bg-yellow-400", offline:"bg-gray-300 dark:bg-dark-4" };
+const USER_MEDIA: MediaItem[] = [];
 
 type MediaTab = "images" | "videos" | "audio";
 
