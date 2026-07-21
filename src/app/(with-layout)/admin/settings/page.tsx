@@ -7,7 +7,6 @@ export default function AdminSettingsPage() {
         <h1 className="text-2xl font-bold text-dark dark:text-white">Sozlamalar</h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-dark-6">Admin hisob sozlamalari.</p>
       </div>
-
       <ChangePasswordForm />
     </div>
   );

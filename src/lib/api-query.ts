@@ -18,9 +18,9 @@ function cleanFilter(filter: FilterParams) {
   );
 }
 
-export function buildPagedQuery(params: PageableParams & FilterParams) {
+export function buildPagedQuery<T extends PageableParams>(params: T) {
   const { page = 0, size = 20, sort, ...filterParams } = params;
-  const filter = cleanFilter(filterParams);
+  const filter = cleanFilter(filterParams as FilterParams);
   const pageable = { page, size, ...(sort ? { sort } : {}) };
 
   return {

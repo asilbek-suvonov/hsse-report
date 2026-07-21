@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/store/useAuthStore";
 import { tokenStore } from "@/api/client";
+import { getDashboardByRole, normalizeRole } from "@/lib/auth/role";
 import { LoginRequest, ChangePasswordRequest, UserResponse } from "@/types/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -9,6 +10,11 @@ import { toast } from "sonner";
 const SESSION_KEY = "hsse_mock_session";
 
 function getErrorMessage(error: unknown, fallback: string) {
+  if (error && typeof error === "object" && "message" in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string" && message) return message;
+  }
+
   return error instanceof Error ? error.message : fallback;
 }
 
@@ -20,7 +26,7 @@ export function saveSessionData(user: UserResponse, accessToken: string, refresh
   tokenStore.setRefresh(refreshToken);
 
   // Normalize role
-  const normalizedRole = user.role.toLowerCase().replace("-", "_");
+  const normalizedRole = normalizeRole(user.role);
 
   // Create session user object compatible with middleware & UserInfo
   const sessionUser = {
@@ -63,11 +69,7 @@ export function useLogin() {
         const { user, accessToken, refreshToken } = response.data;
         saveSessionData(user, accessToken, refreshToken);
 
-        const normalizedRole = (user.role || "").toLowerCase().replace("-", "_");
-        const dashboard =
-          normalizedRole === "super_admin"
-            ? "/super-admin/dashboard"
-            : "/admin/dashboard";
+        const dashboard = getDashboardByRole(user.role);
 
         toast.success("Muvaffaqiyatli kirdingiz!");
         router.replace(dashboard);

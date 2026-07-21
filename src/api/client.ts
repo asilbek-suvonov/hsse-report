@@ -1,12 +1,4 @@
-/**
- * Markaziy Axios instance
- *
- * ⚠️  CORS OGOHLANTIRISH:
- *   http://185.187.8.92 — HTTP server. Brauzer CORS policy sababli
- *   frontend http://localhost:3000 → http://185.187.8.92 so'rovlari
- *   backend da Access-Control-Allow-Origin header bo'lmasa bloklanadi.
- *   Bu backend tomonida sozlanishi kerak bo'lgan masala.
- */
+
 
 import axios, {
   AxiosError,

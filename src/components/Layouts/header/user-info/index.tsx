@@ -7,6 +7,7 @@ import {
   DropdownTrigger,
 } from "@/components/ui/dropdown";
 import { signOut, useSession } from "@/lib/auth/auth-client";
+import { getSettingsByRole } from "@/lib/auth/role";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import Image from "next/image";
@@ -46,6 +47,7 @@ export function UserInfo() {
     email: (session?.data?.user?.email ?? "") as string,
     img:   (session?.data?.user?.image ?? "") as string,
   };
+  const settingsHref = getSettingsByRole(useAuthStore.getState().role);
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -105,7 +107,7 @@ export function UserInfo() {
 
         <div className="p-2 text-base text-[#4B5563] *:cursor-pointer dark:text-dark-6">
           <Link
-            href="/super-admin/settings"
+            href={settingsHref}
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2.25 ring-primary outline-0 hover:bg-gray-2 hover:text-dark focus-visible:ring-1 dark:hover:bg-dark-3 dark:hover:text-white"
           >

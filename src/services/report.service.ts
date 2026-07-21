@@ -1,17 +1,19 @@
 import { get, post } from "@/api/client";
+import { withRolePrefix } from "@/api/role-endpoint";
 import { buildPagedQuery } from "@/lib/api-query";
+import type { AppRole } from "@/store/useAuthStore";
 import type { ApiResponse } from "@/types/auth";
 import type { CreateReportRequest, ReportListParams, ReportPageResponse, ReportResponse } from "@/types/report";
 
 export const reportService = {
-  list: (params: ReportListParams) =>
-    get<ApiResponse<ReportPageResponse>>("/admin/reports", {
+  list: (params: ReportListParams, role?: AppRole | null) =>
+    get<ApiResponse<ReportPageResponse>>(withRolePrefix("/reports", role), {
       params: buildPagedQuery(params),
     }),
 
-  get: (id: number | string) =>
-    get<ApiResponse<ReportResponse>>(`/admin/reports/${id}`),
+  get: (id: number | string, role?: AppRole | null) =>
+    get<ApiResponse<ReportResponse>>(withRolePrefix(`/reports/${id}`, role)),
 
-  create: (data: CreateReportRequest) =>
-    post<ApiResponse<ReportResponse>>("/admin/reports", data),
+  create: (data: CreateReportRequest, role?: AppRole | null) =>
+    post<ApiResponse<ReportResponse>>(withRolePrefix("/reports", role), data),
 };

@@ -1,4 +1,6 @@
 import { get, post, put, del } from "@/api/client";
+import { withRolePrefix } from "@/api/role-endpoint";
+import type { AppRole } from "@/store/useAuthStore";
 import { ApiResponse, UserResponse } from "@/types/auth";
 import { buildPagedQuery } from "@/lib/api-query";
 
@@ -71,29 +73,29 @@ export interface BranchListParams {
 }
 
 export const employeeService = {
-  list: (params: EmployeeListParams) =>
+  list: (params: EmployeeListParams, role?: AppRole | null) =>
     get<ApiResponse<{ content: EmployeeResponse[]; totalPages: number; totalElements: number }>>(
-      "/admin/employees",
+      withRolePrefix("/employees", role),
       { params: buildPagedQuery(params) },
     ),
 
-  get: (id: number | string) =>
-    get<ApiResponse<EmployeeResponse>>(`/admin/employees/${id}`),
+  get: (id: number | string, role?: AppRole | null) =>
+    get<ApiResponse<EmployeeResponse>>(withRolePrefix(`/employees/${id}`, role)),
 
-  create: (data: CreateEmployeeRequest) =>
-    post<ApiResponse<EmployeeResponse>>("/admin/employees", data),
+  create: (data: CreateEmployeeRequest, role?: AppRole | null) =>
+    post<ApiResponse<EmployeeResponse>>(withRolePrefix("/employees", role), data),
 
-  update: (id: number | string, data: UpdateEmployeeRequest) =>
-    put<ApiResponse<EmployeeResponse>>(`/admin/employees/${id}`, data),
+  update: (id: number | string, data: UpdateEmployeeRequest, role?: AppRole | null) =>
+    put<ApiResponse<EmployeeResponse>>(withRolePrefix(`/employees/${id}`, role), data),
 
-  delete: (id: number | string) =>
-    del<ApiResponse<object>>(`/admin/employees/${id}`),
+  delete: (id: number | string, role?: AppRole | null) =>
+    del<ApiResponse<object>>(withRolePrefix(`/employees/${id}`, role)),
 
-  toggle: (id: number | string) =>
-    put<ApiResponse<EmployeeResponse>>(`/admin/employees/${id}/toggle`),
+  toggle: (id: number | string, role?: AppRole | null) =>
+    put<ApiResponse<EmployeeResponse>>(withRolePrefix(`/employees/${id}/toggle`, role)),
 
-  listDepartments: () =>
-    get<ApiResponse<DepartmentResponse[]>>("/admin/departments"),
+  listDepartments: (role?: AppRole | null) =>
+    get<ApiResponse<DepartmentResponse[]>>(withRolePrefix("/departments", role)),
 
   listBranches: (params?: BranchListParams) =>
     get<ApiResponse<{ content: BranchResponse[] }>>("/super-admin/branches", {

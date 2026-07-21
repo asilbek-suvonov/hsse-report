@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { messageService } from "@/services/message.service";
+import { useAuthStore } from "@/store/useAuthStore";
 import { MessageRequest } from "@/types/message";
 import { toast } from "sonner";
 
@@ -8,10 +9,12 @@ function getErrorMessage(error: unknown) {
 }
 
 export function useMessages() {
+  const role = useAuthStore((state) => state.role);
+
   return useQuery({
-    queryKey: ["messages"],
+    queryKey: ["messages", role],
     queryFn: async () => {
-      const response = await messageService.list();
+      const response = await messageService.list(role);
       if (response.success && response.data) {
         return response.data;
       }
@@ -23,9 +26,10 @@ export function useMessages() {
 
 export function useSendMessage() {
   const queryClient = useQueryClient();
+  const role = useAuthStore((state) => state.role);
 
   return useMutation({
-    mutationFn: (data: MessageRequest) => messageService.send(data),
+    mutationFn: (data: MessageRequest) => messageService.send(data, role),
     onSuccess: (response) => {
       if (response.success) {
         queryClient.invalidateQueries({ queryKey: ["messages"] });

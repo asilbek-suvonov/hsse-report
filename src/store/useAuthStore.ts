@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { normalizeRole } from "@/lib/auth/role";
 
 export type AppRole = "super_admin" | "admin";
 
@@ -33,10 +34,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       setUser: (user, role) => {
-        // Normalize role: API SUPER_ADMIN/ADMIN -> frontend super_admin/admin
-        const normalizedRole = (role || "")
-          .toLowerCase()
-          .replace("-", "_") as AppRole;
+        const normalizedRole = normalizeRole(role);
 
         const normalizedUser: AuthUser = {
           id: user.id,

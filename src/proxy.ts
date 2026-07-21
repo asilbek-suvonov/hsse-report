@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { getDashboardByRole, normalizeRole } from "@/lib/auth/role";
 
 // ─── Route access map ────────────────────────────────────────────────────────
 const ROLE_ROUTES: Record<string, string[]> = {
@@ -35,7 +36,7 @@ export async function proxy(request: NextRequest) {
   if (sessionCookie) {
     try {
       const user = JSON.parse(decodeURIComponent(sessionCookie));
-      userRole = user?.role ?? null;
+      userRole = normalizeRole(user?.role);
     } catch {
       userRole = null;
     }
@@ -50,22 +51,14 @@ export async function proxy(request: NextRequest) {
 
   // Root path → rolga qarab dashboard
   if (pathname === "/") {
-    const dashboard =
-      userRole === "super_admin"
-        ? "/super-admin/dashboard"
-        : "/admin/dashboard";
-    return NextResponse.redirect(new URL(dashboard, request.url));
+    return NextResponse.redirect(new URL(getDashboardByRole(userRole), request.url));
   }
 
   // Role-based access control
   for (const [role, prefixes] of Object.entries(ROLE_ROUTES)) {
     if (prefixes.some((p) => pathname.startsWith(p))) {
       if (userRole !== role) {
-        const ownDashboard =
-          userRole === "super_admin"
-            ? "/super-admin/dashboard"
-            : "/admin/dashboard";
-        return NextResponse.redirect(new URL(ownDashboard, request.url));
+        return NextResponse.redirect(new URL(getDashboardByRole(userRole), request.url));
       }
     }
   }

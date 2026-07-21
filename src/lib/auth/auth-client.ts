@@ -3,6 +3,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { authService } from "@/services/auth.service";
 import { saveSessionData, clearSessionData } from "@/hooks/useAuth";
+import { normalizeRole } from "@/lib/auth/role";
 
 export type AppRole = "super_admin" | "admin";
 
@@ -22,7 +23,7 @@ export const signIn = {
         saveSessionData(user, accessToken, refreshToken);
 
         // Map API role to AppRole
-        const normalizedRole = (user.role || "").toLowerCase().replace("-", "_") as AppRole;
+        const normalizedRole = normalizeRole(user.role) as AppRole;
         const mappedUser = {
           id: String(user.id),
           name: user.fullName || "",

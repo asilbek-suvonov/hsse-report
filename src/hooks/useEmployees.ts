@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { employeeService, BranchListParams, CreateEmployeeRequest, EmployeeListParams, UpdateEmployeeRequest } from "@/services/employee.service";
+import { useAuthStore } from "@/store/useAuthStore";
 import { toast } from "sonner";
 
 function getErrorMessage(error: unknown) {
@@ -7,10 +8,12 @@ function getErrorMessage(error: unknown) {
 }
 
 export function useEmployees(params: EmployeeListParams) {
+  const role = useAuthStore((state) => state.role);
+
   return useQuery({
-    queryKey: ["employees", params],
+    queryKey: ["employees", role, params],
     queryFn: async () => {
-      const response = await employeeService.list(params);
+      const response = await employeeService.list(params, role);
       if (response.success && response.data) {
         return response.data;
       }
@@ -21,9 +24,10 @@ export function useEmployees(params: EmployeeListParams) {
 
 export function useCreateEmployee() {
   const queryClient = useQueryClient();
+  const role = useAuthStore((state) => state.role);
 
   return useMutation({
-    mutationFn: (data: CreateEmployeeRequest) => employeeService.create(data),
+    mutationFn: (data: CreateEmployeeRequest) => employeeService.create(data, role),
     onSuccess: (response) => {
       if (response.success) {
         toast.success("Xodim muvaffaqiyatli qo'shildi!");
@@ -41,10 +45,11 @@ export function useCreateEmployee() {
 
 export function useUpdateEmployee() {
   const queryClient = useQueryClient();
+  const role = useAuthStore((state) => state.role);
 
   return useMutation({
     mutationFn: ({ id, data }: { id: number | string; data: UpdateEmployeeRequest }) =>
-      employeeService.update(id, data),
+      employeeService.update(id, data, role),
     onSuccess: (response) => {
       if (response.success) {
         toast.success("Xodim ma'lumotlari muvaffaqiyatli yangilandi!");
@@ -62,9 +67,10 @@ export function useUpdateEmployee() {
 
 export function useDeleteEmployee() {
   const queryClient = useQueryClient();
+  const role = useAuthStore((state) => state.role);
 
   return useMutation({
-    mutationFn: (id: number | string) => employeeService.delete(id),
+    mutationFn: (id: number | string) => employeeService.delete(id, role),
     onSuccess: (response) => {
       if (response.success) {
         toast.success("Xodim muvaffaqiyatli o'chirildi!");
@@ -82,9 +88,10 @@ export function useDeleteEmployee() {
 
 export function useToggleEmployee() {
   const queryClient = useQueryClient();
+  const role = useAuthStore((state) => state.role);
 
   return useMutation({
-    mutationFn: (id: number | string) => employeeService.toggle(id),
+    mutationFn: (id: number | string) => employeeService.toggle(id, role),
     onSuccess: (response) => {
       if (response.success) {
         toast.success("Xodim statusi muvaffaqiyatli o'zgartirildi!");
@@ -101,10 +108,12 @@ export function useToggleEmployee() {
 }
 
 export function useDepartments() {
+  const role = useAuthStore((state) => state.role);
+
   return useQuery({
-    queryKey: ["departments"],
+    queryKey: ["departments", role],
     queryFn: async () => {
-      const response = await employeeService.listDepartments();
+      const response = await employeeService.listDepartments(role);
       if (response.success && response.data) {
         return response.data;
       }
