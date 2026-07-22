@@ -63,7 +63,10 @@ export function useLogin() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (data: LoginRequest) => authService.login(data),
+    mutationFn: (data: LoginRequest) => {
+      clearSessionData();
+      return authService.login(data);
+    },
     onSuccess: (response) => {
       if (response.success && response.data) {
         const { user, accessToken, refreshToken } = response.data;

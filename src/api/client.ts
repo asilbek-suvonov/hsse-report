@@ -42,6 +42,17 @@ export const tokenStore = {
 // ─── Request interceptor — JWT qo'shish ────────────────────────────────────
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    const url = config.url ?? "";
+    const isAuthEndpoint =
+      url.includes("/auth/login") ||
+      url.includes("/auth/refresh") ||
+      url.includes("/auth/logout");
+
+    if (isAuthEndpoint && config.headers) {
+      delete config.headers.Authorization;
+      return config;
+    }
+
     const token = tokenStore.getAccess();
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
